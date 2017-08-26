@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: efs-provisioner
+data:
+  file.system.id: fs-898be8c0
+  aws.region: us-east-1
+  provisioner.name: datasciencedevops.com/aws-efs
