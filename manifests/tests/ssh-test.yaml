@@ -1,0 +1,43 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: ssh-test
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ssh-test
+    spec:
+      containers:
+      - name: ssh-test
+        image: rastasheep/ubuntu-sshd:16.04
+        ports:
+        - containerPort: 22
+        volumeMounts:
+          - name: efs-pvc
+            mountPath: "/mnt"
+      volumes:
+        - name: efs-pvc
+          emptyDir: {}
+
+---
+apiVersion: v1
+# https://kubernetes.io/docs/concepts/services-networking/service/
+kind: Service
+metadata:
+  # the name ssh-test here means you can reference the pod
+  # using the host ssh-test.default.svc.cluster.local from within the cluster
+  name: ssh-test
+spec:
+  # allows us to set our own internal IP to reference this pod
+  # in this case we care about the port
+  # https://kubernetes.io/docs/concepts/services-networking/service/#choosing-your-own-ip-address
+  type: ClusterIP
+  ports:
+  # make the service available on this port within the cluster
+  - port: 22
+    protocol: TCP
+  # apply this service to the pod with the label app: ssh-test
+  selector:
+    app: ssh-test
