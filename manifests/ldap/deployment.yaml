@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ldap
+  labels:
+    app: ldap
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ldap
+    spec:
+      containers:
+        - name: ldap
+          image: ektar/ldap:1.1.9
+          args: ["--copy-service"]
+          volumeMounts:
+            - name: ldap-data
+              mountPath: /var/lib/ldap
+            - name: ldap-config
+              mountPath: /etc/ldap/slapd.d
+            - name: ldap-certs
+              mountPath: /container/service/slapd/assets/certs
+            - name: secret-volume
+              mountPath: /container/environment/01-custom
+            - name: container-run
+              mountPath: /container/run
+          ports:
+            - containerPort: 389
+              name: openldap
+      volumes:
+        - name: ldap-data
+          nfs:
+            path: /system/ldap/config
+            server: fs-6c3ce725.efs.us-east-1.amazonaws.com
+            readOnly: false
+        - name: ldap-config
+          nfs:
+            path: /system/ldap/data
+            server: fs-6c3ce725.efs.us-east-1.amazonaws.com
+            readOnly: false
+        - name: ldap-certs
+          nfs:
+            path: /system/ldap/certs
+            server: fs-6c3ce725.efs.us-east-1.amazonaws.com
+            readOnly: false
+        - name: "secret-volume"
+          secret:
+            secretName: "ldap-secret"
+        - name: container-run
+          emptyDir: {}
