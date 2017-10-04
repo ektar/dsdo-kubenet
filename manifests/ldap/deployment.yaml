@@ -28,7 +28,7 @@ spec:
               mountPath: /container/run
           ports:
             - containerPort: 389
-              name: openldap
+              name: ldap
       volumes:
         - name: ldap-data
           nfs:
