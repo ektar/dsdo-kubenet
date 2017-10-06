@@ -24,3 +24,10 @@ RUN sed -i.bak 's/^\(\(passwd\|group\|shadow\):.*compat\)/\1 ldap/' /etc/nsswitc
 RUN sed -i.bak 's/pam_ldap.so use_authtok try_first_pass/pam_ldap.so try_first_pass/' /etc/pam.d/common-password
 RUN echo "account required    pam_access.so" >> /etc/pam.d/common-auth
 
+RUN sed -i.bak 's/^#\(PasswordAuthentication yes\)/\1/' /etc/ssh/sshd_config
+
+RUN mkdir /data
+
+COPY startup.sh /data/startup.sh
+
+ENTRYPOINT ["/data/startup.sh"]
