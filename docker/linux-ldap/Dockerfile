@@ -31,3 +31,5 @@ RUN mkdir /data
 COPY startup.sh /data/startup.sh
 
 ENTRYPOINT ["/data/startup.sh"]
+
+EXPOSE 22
