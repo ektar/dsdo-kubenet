@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: linux-terminal
+  name: linux-terminal
+spec:
+  ports:
+    - port: 22
+  selector:
+    app: linux-terminal

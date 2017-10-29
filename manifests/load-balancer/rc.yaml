@@ -46,10 +46,14 @@ spec:
         - containerPort: 443
           hostPort: 8081
           protocol: TCP
+        # linux-terminal ssh
+        - containerPort: 22
+          hostPort: 8022
+          protocol: TCP
         # haproxy stats
         - containerPort: 1936
           hostPort: 1936
           protocol: TCP
         resources: {}
         args:
-        - --tcp-services=ldap:389,ldap-ui:443
+        - --tcp-services=ldap:389,ldap-ui:443,linux-terminal:22
