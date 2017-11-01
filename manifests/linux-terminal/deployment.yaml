@@ -14,8 +14,6 @@ spec:
       containers:
         - name: linux-terminal
           image: ektar/linux-ldap:1.0
-          ports:
-            - containerPort: 22
           volumeMounts:
             - name: nfs-home
               mountPath: /home/users
