@@ -3,6 +3,11 @@ kind: Ingress
 metadata:
   name: ldap-ui
 spec:
-  backend:
-    serviceName: ldap-ui
-    servicePort: 443
+  rules:
+    - host: ldap-ui.internal.k8s.ds-do.com
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName: ldap-ui
+            servicePort: 80

@@ -6,6 +6,6 @@ metadata:
   name: ldap-ui
 spec:
   ports:
-    - port: 443
+    - port: 80
   selector:
     app: ldap-ui
