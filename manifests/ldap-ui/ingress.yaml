@@ -4,10 +4,10 @@ metadata:
   name: ldap-ui
 spec:
   rules:
-    - host: ldap-ui.internal.k8s.ds-do.com
+    - host: gw.internal.k8s.ds-do.com
       http:
         paths:
-        - path: /
+        - path: /ldap-ui
           backend:
             serviceName: ldap-ui
             servicePort: 80

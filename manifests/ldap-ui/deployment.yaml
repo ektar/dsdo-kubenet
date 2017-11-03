@@ -25,9 +25,9 @@ spec:
             - name: PHPLDAPADMIN_LDAP_HOSTS
               value: "ldap.default"
             - name: PHPLDAPADMIN_SERVER_ADMIN
-              value: "eric@datasciencedevops.com"
+              value: "eric@ds-do.com"
             - name: PHPLDAPADMIN_SERVER_PATH
-              value: "/phpldapadmin"
+              value: "/ldap-ui"
             - name: PHPLDAPADMIN_HTTPS
               value: "false"
             - name: PHPLDAPADMIN_HTTPS_CRT_FILENAME
