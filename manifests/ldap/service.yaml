@@ -5,8 +5,10 @@ metadata:
     app: ldap
   name: ldap
 spec:
+  type: NodePort
   ports:
     - port: 389
+      nodePort: 30389
       protocol: TCP
       name: ldap
   selector:
