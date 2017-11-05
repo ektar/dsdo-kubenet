@@ -1,0 +1,25 @@
+LDAP_ORGANISATION="My Organization"
+LDAP_ADMIN_PW=admin_password
+LDAP_CONFIG_PW=config_password
+LDAP_RO_PW=readonly_password
+
+export LDAP_ORGANISATION LDAP_ADMIN_PW LDAP_CONFIG_PW LDAP_RO_PW
+
+LDAP_DOMAIN=mydomain.com
+LDAP_BASE=dc=mydomain,dc=com
+LDAP_USER_FIRST=Firstname
+LDAP_USER_LAST=Lastname
+LDAP_USERNAME=username
+
+export LDAP_DOMAIN LDAP_BASE LDAP_USER_FIRST LDAP_USER_LAST LDAP_USERNAME
+
+PHPLDAPADMIN_SERVER_ADMIN=my_email@gmail.com
+export PHPLDAPADMIN_SERVER_ADMIN
+
+K8S_INGRESS=gw.internal.k8s.mydomain.com
+export K8S_INGRESS
+
+USER_SSH_KEY='ssh-rsa AAAAB3Nz ... username@domain.com'
+
+USER_JUMP_SSH_KEY='ssh-rsa AAAAB3Nz username_jump@domain.com'
+export USER_SSH_KEY USER_JUMP_SSH_KEY

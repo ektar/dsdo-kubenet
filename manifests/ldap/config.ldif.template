@@ -1,0 +1,70 @@
+# groups, $LDAP_DOMAIN
+dn: ou=groups,$LDAP_BASE
+ou: groups
+objectClass: organizationalUnit
+objectClass: top
+
+# users, $LDAP_DOMAIN
+dn: ou=users,$LDAP_BASE
+ou: users
+objectClass: organizationalUnit
+objectClass: top
+
+# scientists, groups, $LDAP_DOMAIN
+dn: cn=scientists,ou=groups,$LDAP_BASE
+cn: scientists
+objectClass: posixGroup
+objectClass: top
+gidNumber: 5500
+
+# admins, groups, $LDAP_DOMAIN
+dn: cn=admins,ou=groups,$LDAP_BASE
+cn: admins
+objectClass: posixGroup
+objectClass: top
+gidNumber: 5501
+memberUid: 5100
+
+# bastion, users, $LDAP_DOMAIN
+dn: ou=bastion,ou=users,$LDAP_BASE
+ou: bastion
+objectClass: organizationalUnit
+objectClass: top
+
+# internal, users, $LDAP_DOMAIN
+dn: ou=internal,ou=users,$LDAP_BASE
+ou: internal
+objectClass: organizationalUnit
+objectClass: top
+
+# $LDAP_USER_FIRST $LDAP_USER_LAST, internal, users, $LDAP_DOMAIN
+dn: cn=$LDAP_USER_FIRST $LDAP_USER_LAST,ou=internal,ou=users,$LDAP_BASE
+givenName: $LDAP_USER_FIRST
+sn: $LDAP_USER_LAST
+cn: $LDAP_USER_FIRST $LDAP_USER_LAST
+uid: $LDAP_USERNAME
+gidNumber: 5500
+homeDirectory: /home/users/$LDAP_USERNAME
+loginShell: /bin/bash
+uidNumber: 5100
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+objectClass: ldapPublicKey
+sshPublicKey: $USER_SSH_KEY
+
+# $LDAP_USER_FIRST $LDAP_USER_LAST - Jump, bastion, users, $LDAP_DOMAIN
+dn: cn=$LDAP_USER_FIRST $LDAP_USER_LAST - Jump,ou=bastion,ou=users,$LDAP_BASE
+givenName: $LDAP_USER_FIRST
+sn: $LDAP_USER_LAST
+cn: $LDAP_USER_FIRST $LDAP_USER_LAST - Jump
+uid: ${LDAP_USERNAME}_jump
+gidNumber: 5500
+loginShell: /bin/sh
+homeDirectory: /
+uidNumber: 5101
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+objectClass: ldapPublicKey
+sshPublicKey: $USER_JUMP_SSH_KEY
