@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: linux-terminal
-          image: ektar/linux-ldap:1.0
+          image: ektar/linux-ldap:1.0.1
           volumeMounts:
             - name: nfs-home
               mountPath: /home/users

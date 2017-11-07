@@ -5,7 +5,11 @@ metadata:
     app: linux-terminal
   name: linux-terminal
 spec:
+  type: NodePort
   ports:
     - port: 22
+      nodePort: 31022
+      protocol: TCP
+      name: linux-terminal-ssh
   selector:
     app: linux-terminal
