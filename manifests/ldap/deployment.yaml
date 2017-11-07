@@ -11,6 +11,17 @@ spec:
       labels:
         app: ldap
     spec:
+      initContainers:
+        - name: init-ldap
+          image: ektar/linux-base:1.0
+          command: ["mkdir", "-p",
+                    "/mnt/efs/system/ldap/config",
+                    "/mnt/efs/system/ldap/data",
+                    "/mnt/efs/system/ldap/certs",
+                    "/mnt/efs/system/ldap/iwashere"]
+          volumeMounts:
+            - name: efs-root
+              mountPath: /mnt/efs
       containers:
         - name: ldap
           image: ektar/ldap:1.1.9
@@ -48,5 +59,10 @@ spec:
         - name: "secret-volume"
           secret:
             secretName: "ldap-secret"
+        - name: efs-root
+          nfs:
+            path: /
+            server: fs-6c3ce725.efs.us-east-1.amazonaws.com
+            readOnly: false
         - name: container-run
           emptyDir: {}
