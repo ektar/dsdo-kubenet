@@ -3,14 +3,16 @@ MAINTAINER eric@ds-do.com
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
 	apt-get update && apt install -qy \
+	gosu \
 	libpam-ldap \
-	nscd \
 	ldap-utils \
 	libsasl2-dev \
 	libldap2-dev \
 	libssl-dev \
+	nscd \
 	python-ldap \
 	python-pip \
+	sudo \
  && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --upgrade pip
