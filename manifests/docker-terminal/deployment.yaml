@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: docker-terminal
+  labels:
+    app: docker-terminal
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: docker-terminal
+    spec:
+      containers:
+        - name: docker-terminal
+          image: ektar/linux-ldap-docker:1.0.1
+          volumeMounts:
+            - name: nfs-home
+              mountPath: /home/users
+            - name: efs-root
+              mountPath: /mnt/efs
+            - name: dockersock
+              mountPath: /var/run/docker.sock
+          ports:
+            - containerPort: 22
+              name: ssh
+      volumes:
+        - name: nfs-home
+          nfs:
+            path: /home
+            server: fs-6c3ce725.efs.us-east-1.amazonaws.com
+            readOnly: false
+        - name: efs-root
+          nfs:
+            path: /
+            server: fs-6c3ce725.efs.us-east-1.amazonaws.com
+            readOnly: false
+        - name: dockersock
+          hostPath:
+            path: /var/run/docker.sock

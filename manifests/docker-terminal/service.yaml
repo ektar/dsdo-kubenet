@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: docker-terminal
+  name: docker-terminal
+spec:
+  type: NodePort
+  ports:
+    - port: 22
+      nodePort: 32022
+      protocol: TCP
+      name: docker-terminal-ssh
+  selector:
+    app: docker-terminal
