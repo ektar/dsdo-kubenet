@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dropbox
+  labels:
+    app: dropbox
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dropbox
+    spec:
+      containers:
+        - name: dropbox
+          image: ektar/dropbox:1.0.4
+#          command: ["tail"]
+#          args: ["-f", "/var/log/dmesg"]
+          volumeMounts:
+            - name: dropbox-data
+              mountPath: /dbox
+          env:
+            - name: DBOX_UID
+              value: "5100"
+            - name: DBOX_GID
+              value: "5500"
+      volumes:
+        - name: dropbox-data
+          nfs:
+            path: /home/ecarlson/.dropbox-etc
+            server: fs-6c3ce725.efs.us-east-1.amazonaws.com
+            readOnly: false
