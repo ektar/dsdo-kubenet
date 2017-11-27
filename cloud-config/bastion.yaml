@@ -1,0 +1,104 @@
+#cloud-config
+
+# http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+repo_update: true
+repo_upgrade: all
+
+packages:
+ - auth-client-config 
+ - awscli 
+ - dnsutils 
+ - groff
+ - iputils-ping 
+ - jq 
+ - ldap-utils 
+ - libldap2-dev 
+ - libnss-sss 
+ - libpam-sss 
+ - libsasl2-dev 
+ - libssl-dev
+ - nfs-common 
+ - python-dev 
+ - python-ldap 
+ - python-pip 
+ - screen 
+ - sssd 
+ - sssd-tools
+ - telnet 
+ - tmux 
+ - unzip 
+
+write_files:
+- encoding: gz+b64
+  content: |
+    H4sIAHNiG1oAA31UTW/bMAy961cIzSHAkCZdg3VDAQNDO2DoZe1hwzAEgaBIdKxVljxRSpp/P8p2
+    vpq0F8N+fKQeyWfNHOKclcZGCGIZfGqQFzx4H7dgQgg7LIDyzoGKxjsRIAYDOTZljM0aWc/fIcwQ
+    Uc8ZhUuzFFQcxIoqE4/i128n4iKhiKYGn2IGrhgJWhnVhkn9iNPBTPtaGpchjZfaj5UnDBZpKSys
+    wBafSEDHmewIczb4bWLFY2WQS+SltAgjLjmaurHAL5YQwUWqj7jWF7z0gUfAaNySr70bRnqG5zH/
+    4xOvE0auPT9K4Xl2X7tjW0XgUg1BRiCdMSRgSqoKhAqgKcvQ+dsAM1o0wa+MhkCY1bJhUlHTeAqn
+    WJ2AqsoSTmCWnyIF0wN4O5ks12PjaNNO2vHzFxzv5nM7vbqZ3nQpCDKoSiwkZu1aFS1rRC+5r5YS
+    LQrqB0Je0wSimiDaSf7GiZKX+cWURlH3OFYhskGb1TfVmY0S/eIvmeDekvriwxucGuoFhMeyUK54
+    6KX/olGPfCqCt4CjswLfK3MnMTvv/Sps8DNbpZFB1pBrBPiXTCAnxkpGegD/ds8bArIHJKcc8lEE
+    u+EraY2m1jU/mANXVXYGfyj5xqdhgJ29yGm6dZiSgSxJPuJDaa1fD3No6MjTYTjez52E9IPXUEun
+    +8Edh9oCjGmHQhtUnmpsROfOo/+m3zg5s5b5xy/V9fTq8/EufOhcBS8NDWAf88lF0YGi8daoTT54
+    q4f+IAUiNQ3dK4qsROKkrXee78xJK3hlN1pIewudX2t7a51mdJfZ+ZT2jM5pQmWrUYpxEB/D8onO
+    8e6A5mjXFE5GH4BlsrYPqENy5Wug4dJlFn3IrWdg991PoWU2wThlGmlzbQKett8/qOxhY69kNh7N
+    y/ccOSTttbDBnXHksv2V0vE0lDLZKBYUFdq15ILGTzazm/NT2qbkCyb652yFnj+9/sj+A9iYl+s6
+    BgAA
+  path: /etc/sssd/sssd.conf
+  permissions: '0600'
+- encoding: gz+b64
+  content: |
+    H4sIAABjG1oAA13MUQrCMBAE0P89RQ5QUzVYpNCzlG02SDDZDdnW4u1tFRH8G5g3M6EGQ34gPZA0
+    W/CSYanRJMKifdveVht5DpUx2ftV7RvaTfXu2LkOdjc+QtUobBxMkYnYeB5qQBJOz+b/fSdlNd/e
+    nU9QRebfEilH/swKFMxjQdVVKplMF3gBrLl2p7IAAAA=
+  path: /etc/ldap.conf
+  permissions: '0660'
+  owner: sshd:root
+
+ca-certs:
+  remove-defaults: false
+  trusted: 
+  - |
+    -----BEGIN CERTIFICATE-----
+    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
+    oDWIFkB5LaQn55Kn7MKwRUmIecgpLX14qg==
+    -----END CERTIFICATE-----
+
+runcmd:
+  - pip install ssh-ldap-pubkey
+  - |
+    echo "AuthorizedKeysCommand /usr/local/bin/ssh-ldap-pubkey-wrapper
+    AuthorizedKeysCommandUser sshd" >> /etc/ssh/sshd_config
+  - service sshd restart
+
+#- echo "session required    pam_mkhomedir.so skel=/etc/skel umask=0022" >> /etc/pam.d/common-session
