@@ -18,6 +18,7 @@ packages:
  - python-dev 
  - python-ldap 
  - python-pip 
+ - python3-pip
  - screen 
  - telnet 
  - tmux 
@@ -30,3 +31,5 @@ runcmd:
  - wget -O kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
  - chmod +x ./kubectl
  - mv ./kubectl /usr/local/bin/kubectl
+ - sudo echo 'export PATH=$HOME/bin:$HOME/.local/bin:$PATH' >> /etc/bash.bashrc
+ 
