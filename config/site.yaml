@@ -1,0 +1,34 @@
+general:
+  organization: "My Organization"
+  domain: "mydomain.com"
+  admin_email: "my_email@gmail.com"
+  vpc_name: "my-vpc"
+  zone: "us-east-1a"
+
+ldap:
+  base: "dc=mydomain,dc=com"
+  admin_password: "<prompt>"
+  readonly_password: "<prompt>"
+  config_password: "<prompt>"
+
+initial_users:
+- first_name: "User"
+  last_name: "One"
+  username: "user_one"
+  user_id: 
+  ssh_key: 
+  jump_key:
+- first_name: "User"
+  last_name: "Two"
+  username: "user_two"
+  user_id: 
+  ssh_key: 
+  jump_key:
+
+kops:
+  state_store_name: "k8s-state-store"
+  cluster_name: "k8s"
+
+# Notes:
+# cluster_name gets appended to general.domain
+
