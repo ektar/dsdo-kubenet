@@ -1,6 +1,6 @@
 
 def main():
-    print("Sample")
+    print("Launch ldap")
 
 if __name__ == "__main__":
     main()

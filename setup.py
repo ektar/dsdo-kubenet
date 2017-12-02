@@ -67,7 +67,7 @@ setup(
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
     package_data={
-        'dsdo_kubenet': ['templates/*'],
+        'dsdo_kubenet': ['templates/*', 'manifests/*'],
     },
 
     # Although 'package_data' is the preferred approach, in some case you may
@@ -81,7 +81,10 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'test-script=dsdo_kubenet.scripts.sample:main',
+            'launch-dashboard=dsdo_kubenet.scripts.launch_dashboard:main',
+            'launch-ingress=dsdo_kubenet.scripts.launch_ingress:main',
+            'launch-ldap=dsdo_kubenet.scripts.launch_ldap:main',
+            'launch-terminal=dsdo_kubenet.scripts.launch_terminal:main',
         ],
     },
 )
