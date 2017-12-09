@@ -81,7 +81,6 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'launch-dashboard=dsdo_kubenet.scripts.launch_dashboard:main',
             'launch-ingress=dsdo_kubenet.scripts.launch_ingress:main',
             'launch-ldap=dsdo_kubenet.scripts.launch_ldap:main',
             'launch-terminal=dsdo_kubenet.scripts.launch_terminal:main',
