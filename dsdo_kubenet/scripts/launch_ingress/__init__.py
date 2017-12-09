@@ -37,8 +37,6 @@ def launch_ingress(create_resources=True):
         resources = resources[::-1]
     
     for resource_name in resources:
-        log.info("Installing ingress resource {}".format(resource_name))
-        
         with manifest_dir.joinpath("{}.yaml".format(resource_name)).open() as f:
             resources = yaml.load_all(f)
           

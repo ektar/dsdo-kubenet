@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ldap-ui
+  name: ldap-ui
+  namespace: ldap
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: ldap-ui

@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ldap-ui
+  namespace: ldap
+spec:
+  rules:
+    - host: gw.internal.k8s.ds-do.com
+      http:
+        paths:
+        - path: /ldap-ui
+          backend:
+            serviceName: ldap-ui
+            servicePort: 80

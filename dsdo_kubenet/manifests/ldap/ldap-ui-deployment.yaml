@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ldap-ui
+  labels:
+    app: ldap-ui
+  namespace: ldap
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ldap-ui
+    spec:
+      containers:
+        - name: ldap-ui
+          image: ektar/ldap-ui:0.7.1
+          volumeMounts:
+            - name: phpldapadmin-certs
+              mountPath: /container/service/phpldapadmin/assets/apache2/certs
+            - name: ldap-client-certs
+              mountPath: /container/service/ldap-client/assets/certs
+          ports:
+            - containerPort: 80
+          env:
+            - name: PHPLDAPADMIN_LDAP_HOSTS
+              value: "ldap.default"
+            - name: PHPLDAPADMIN_SERVER_ADMIN
+              value: "eric@ds-do.com"
+            - name: PHPLDAPADMIN_SERVER_PATH
+              value: "/ldap-ui"
+            - name: PHPLDAPADMIN_HTTPS
+              value: "false"
+            - name: PHPLDAPADMIN_HTTPS_CRT_FILENAME
+              value: "cert.crt"
+            - name: PHPLDAPADMIN_HTTPS_KEY_FILENAME
+              value: "cert.key"
+            - name: PHPLDAPADMIN_HTTPS_CA_CRT_FILENAME
+              value: "ca.crt"
+            - name: PHPLDAPADMIN_LDAP_CLIENT_TLS
+              value: "false"
+            - name: PHPLDAPADMIN_LDAP_CLIENT_TLS_REQCERT
+              value: "demand"
+            - name: PHPLDAPADMIN_LDAP_CLIENT_TLS_CRT_FILENAME
+              value: "cert.crt"
+            - name: PHPLDAPADMIN_LDAP_CLIENT_TLS_KEY_FILENAME
+              value: "cert.key"
+            - name: PHPLDAPADMIN_LDAP_CLIENT_TLS_CA_CRT_FILENAME
+              value: "ca.crt"
+      volumes:
+        - name: phpldapadmin-certs
+          emptyDir: {}
+        - name: ldap-client-certs
+          emptyDir: {}
