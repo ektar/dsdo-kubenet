@@ -35,8 +35,8 @@ spec:
           requests:
             cpu: 10m
             memory: 20Mi
----
 
+---
 apiVersion: v1
 kind: Service
 metadata:
