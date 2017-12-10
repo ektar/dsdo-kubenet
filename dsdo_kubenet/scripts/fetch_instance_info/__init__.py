@@ -30,8 +30,10 @@ def describe_instance(instance_id=None):
 def main():
     log = logging.getLogger(log_name)
     
+    log.info('Fetching current id')
     instance_id = fetch_current_instance_id()
     log.info("Instance ID = {}".format(instance_id))
+    log.info('Fetching instnace data')
     instance_dat = describe_instance(instance_id=instance_id)
     log.info("Instance VPC = {}".format(instance_dat['VpcId']))
     log.info("Instance Subnet = {}".format(instance_dat['SubnetId']))
