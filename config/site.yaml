@@ -6,7 +6,7 @@ general:
   zone: "us-east-1a"
 
 ldap:
-  base: "dc=mydomain,dc=com"
+  base: "dc=ds-do,dc=com"
   admin_password: "<prompt>"
   readonly_password: "<prompt>"
   config_password: "<prompt>"
@@ -17,13 +17,11 @@ initial_users:
   username: "user_one"
   user_id: 
   ssh_key: 
-  jump_key:
 - first_name: "User"
   last_name: "Two"
   username: "user_two"
   user_id: 
   ssh_key: 
-  jump_key:
 
 kops:
   state_store_name: "k8s-state-store"

@@ -3,4 +3,5 @@ dependencies:
 - python=3.6
 - ipython
 - pip:
+  - boto3
   - kubernetes

@@ -62,6 +62,8 @@ def main():
     
     create_resources = not args.delete
     launch_ldap(create_resources=create_resources)
+    
+    return 0
 
 
 if __name__ == "__main__":
