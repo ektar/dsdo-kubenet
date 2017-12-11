@@ -5,6 +5,8 @@ metadata:
     app: ldap
   name: ldap
   namespace: ldap
+  annotations:
+    dns.alpha.kubernetes.io/internal: ldap.internal.kube.ds-do.com
 spec:
   type: NodePort
   ports:

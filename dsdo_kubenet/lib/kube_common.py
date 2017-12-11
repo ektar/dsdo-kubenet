@@ -20,13 +20,13 @@ class DispatchTable():
                 'ClusterRole': {'func': k8s.create_cluster_role, 'namespaced': False},
                 'ClusterRoleBinding': {'func': k8s.create_cluster_role_binding, 'namespaced': False},
                 'Role': {'func': k8s.create_namespaced_role, 'namespaced': True},
-                'RoleBinding': {'func': k8s.create_namespaced_role_binding, 'namespaced': True}
+                'RoleBinding': {'func': k8s.create_namespaced_role_binding, 'namespaced': True},
             },
             'delete': {
                 'ClusterRole': {'func': partial(k8s.delete_cluster_role, body={}), 'namespaced': False},
                 'ClusterRoleBinding': {'func': partial(k8s.delete_cluster_role_binding, body={}), 'namespaced': False},
                 'Role': {'func': partial(k8s.delete_namespaced_role, body={}), 'namespaced': True},
-                'RoleBinding': {'func': partial(k8s.delete_namespaced_role_binding, body={}), 'namespaced': True}
+                'RoleBinding': {'func': partial(k8s.delete_namespaced_role_binding, body={}), 'namespaced': True},
             }
         }
         return dispatch_table
@@ -56,11 +56,13 @@ class DispatchTable():
         dispatch_table = {
             'create': {
                 'Deployment': {'func': k8s.create_namespaced_deployment, 'namespaced': True},
-                'DaemonSet': {'func': k8s.create_namespaced_daemon_set, 'namespaced': True}
+                'DaemonSet': {'func': k8s.create_namespaced_daemon_set, 'namespaced': True},
+                'Ingress': {'func': k8s.create_namespaced_ingress, 'namespaced': True}
             },
             'delete': {
                 'Deployment': {'func': partial(k8s.delete_namespaced_deployment, body={}), 'namespaced': True},
-                'DaemonSet': {'func': partial(k8s.delete_namespaced_daemon_set, body={}), 'namespaced': True}
+                'DaemonSet': {'func': partial(k8s.delete_namespaced_daemon_set, body={}), 'namespaced': True},
+                'Ingress': {'func': partial(k8s.delete_namespaced_ingress, body={}), 'namespaced': True}
             }
         }
         return dispatch_table

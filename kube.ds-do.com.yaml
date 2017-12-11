@@ -20,6 +20,8 @@ spec:
     - instanceGroup: master-us-east-1a
       name: a
     name: events
+  externalDns:
+    watchIngress: true
   kubernetesApiAccess:
   - 0.0.0.0/0
   kubernetesVersion: 1.7.10
@@ -31,7 +33,7 @@ spec:
       mtu: 8912
   nonMasqueradeCIDR: 100.64.0.0/10
   sshAccess:
-  - 0.0.0.0/0
+  - 10.0.0.0/16
   subnets:
   - id: subnet-b0b0459f
     name: us-east-1a
@@ -42,7 +44,7 @@ spec:
       type: Public
     masters: public
     nodes: public
-
+  
 ---
 
 apiVersion: kops/v1alpha2

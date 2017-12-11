@@ -3,9 +3,11 @@ kind: Ingress
 metadata:
   name: ldap-ui
   namespace: ldap
+  annotations:
+    dns.alpha.kubernetes.io/internal: ldap-ui.internal.kube.ds-do.com
 spec:
   rules:
-    - host: gw.internal.k8s.ds-do.com
+    - host: ldap-ui.internal.kube.ds-do.com
       http:
         paths:
         - path: /ldap-ui

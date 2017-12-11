@@ -1,7 +1,9 @@
+version: 1.0.0
+
 general:
-  organization: "My Organization"
-  domain: "mydomain.com"
-  admin_email: "my_email@gmail.com"
+  organization: "Data Science and DevOps"
+  domain: "ds-do.com"
+  admin_email: "eric@ds-do.com"
   vpc_name: "my-vpc"
   zone: "us-east-1a"
 

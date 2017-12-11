@@ -6,11 +6,16 @@ import logging
 import subprocess
 import requests
 
+# from ipdb import set_trace
+
 log_name = "dsdo.fetch_instance_info"
 
 
 def fetch_current_instance_id():
     log = logging.getLogger(log_name)
+    
+    # Note: Fixed iP, per documentation:
+    #   http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
     aws_url = "http://169.254.169.254/latest/meta-data/instance-id"
     
     response = requests.get(aws_url)
@@ -37,6 +42,8 @@ def main():
     instance_dat = describe_instance(instance_id=instance_id)
     log.info("Instance VPC = {}".format(instance_dat['VpcId']))
     log.info("Instance Subnet = {}".format(instance_dat['SubnetId']))
+    region = instance_dat['Placement']['AvailabilityZone']
+    log.info("Instance Region = {}".format(region))
     return 0
     
 if __name__ == "__main__":
