@@ -5,3 +5,4 @@ dependencies:
 - pip:
   - boto3
   - kubernetes
+  - jinja2

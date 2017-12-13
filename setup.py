@@ -81,6 +81,7 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
+            'create-kops-config=dsdo_kubenet.scripts.create_kops_config:main',
             'fetch-instance-info=dsdo_kubenet.scripts.fetch_instance_info:main',
             'launch-ingress=dsdo_kubenet.scripts.launch_ingress:main',
             'launch-ldap=dsdo_kubenet.scripts.launch_ldap:main',
