@@ -26,3 +26,8 @@ def describe_instance(instance_id=None):
     reservation_dat = ec2.describe_instances(InstanceIds=[instance_id])
     instance_dat = reservation_dat['Reservations'][0]['Instances'][0]
     return instance_dat
+    
+def describe_vpc(vpc_id=None):
+    ec2 = boto3.client('ec2')  
+    vpc_dat = ec2.describe_vpcs(VpcIds=[vpc_id])
+    return vpc_dat['Vpcs'][0]

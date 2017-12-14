@@ -5,13 +5,9 @@ import json
 import logging
 from pprint import pprint
 
-# from ipdb import set_trace
+from ipdb import set_trace
 
 log_name = "dsdo.fetch_instance_info"
-
-
-
-
 
 def main():
     log = logging.getLogger(log_name)
@@ -27,6 +23,9 @@ def main():
     log.info("Instance Region = {}".format(region))
     public_ip = instance_dat['PublicIpAddress']
     log.info("Public ip address = {}".format(public_ip))
+    
+    set_trace()
+    
     # pprint(instance_dat)
     return 0
     
