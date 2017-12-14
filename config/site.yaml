@@ -4,8 +4,6 @@ general:
   organization: "Data Science and DevOps"
   domain: "ds-do.com"
   admin_email: "eric@ds-do.com"
-  vpc_name: "my-vpc"
-  zone: "us-east-1a"
 
 ldap:
   base: "dc=ds-do,dc=com"
@@ -26,8 +24,8 @@ initial_users:
   ssh_key: 
 
 kops:
-  state_store_name: "k8s-state-store"
-  cluster_name: "k8s"
+  state_store_name: "dsdo-k8s-state-store-2"
+  cluster_name: "kube"
 
 # Notes:
 # cluster_name gets appended to general.domain

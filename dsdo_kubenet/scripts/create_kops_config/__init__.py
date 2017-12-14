@@ -57,7 +57,8 @@ def main():
         kops_state_store=config['kops']['state_store_name'],
         vpc_id=vpc_id,
         region=region,
-        vpc_cidr=vpc_dat['CidrBlock']
+        vpc_cidr=vpc_dat['CidrBlock'],
+        subnet_id=subnet_id
         )
     
     print(kops_file)
