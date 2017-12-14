@@ -1,7 +1,7 @@
 apiVersion: kops/v1alpha2
 kind: Cluster
 metadata:
-  creationTimestamp: 2017-12-02T17:23:10Z
+  creationTimestamp: 2017-12-11T03:06:19Z
   name: kube.ds-do.com
 spec:
   api:
@@ -22,9 +22,12 @@ spec:
     name: events
   externalDns:
     watchIngress: true
+  iam:
+    allowContainerRegistry: true
+    legacy: false
   kubernetesApiAccess:
   - 0.0.0.0/0
-  kubernetesVersion: 1.7.10
+  kubernetesVersion: 1.8.4
   masterPublicName: api.kube.ds-do.com
   networkCIDR: 10.0.0.0/16
   networkID: vpc-1bae0c63
@@ -33,7 +36,7 @@ spec:
       mtu: 8912
   nonMasqueradeCIDR: 100.64.0.0/10
   sshAccess:
-  - 10.0.0.0/16
+  - 0.0.0.0/0
   subnets:
   - id: subnet-b0b0459f
     name: us-east-1a
@@ -44,21 +47,23 @@ spec:
       type: Public
     masters: public
     nodes: public
-  
+
 ---
 
 apiVersion: kops/v1alpha2
 kind: InstanceGroup
 metadata:
-  creationTimestamp: 2017-12-02T17:23:10Z
+  creationTimestamp: 2017-12-11T03:06:19Z
   labels:
     kops.k8s.io/cluster: kube.ds-do.com
   name: master-us-east-1a
 spec:
-  image: kope.io/k8s-1.7-debian-jessie-amd64-hvm-ebs-2017-07-28
+  image: kope.io/k8s-1.8-debian-jessie-amd64-hvm-ebs-2017-12-02
   machineType: t2.micro
   maxSize: 1
   minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: master-us-east-1a
   role: Master
   subnets:
   - us-east-1a
@@ -68,17 +73,18 @@ spec:
 apiVersion: kops/v1alpha2
 kind: InstanceGroup
 metadata:
-  creationTimestamp: 2017-12-02T17:23:10Z
+  creationTimestamp: 2017-12-11T03:06:19Z
   labels:
     kops.k8s.io/cluster: kube.ds-do.com
   name: nodes
 spec:
-  image: kope.io/k8s-1.7-debian-jessie-amd64-hvm-ebs-2017-07-28
+  image: kope.io/k8s-1.8-debian-jessie-amd64-hvm-ebs-2017-12-02
   machineType: t2.small
   maxSize: 2
   minSize: 2
+  nodeLabels:
+    kops.k8s.io/instancegroup: nodes
+    dsdo-role: admin-node
   role: Node
   subnets:
   - us-east-1a
-  nodeLabels: 
-    role: admin-node
