@@ -24,7 +24,7 @@ def main():
     public_ip = instance_dat['PublicIpAddress']
     log.info("Public ip address = {}".format(public_ip))
     
-    set_trace()
+    # set_trace()
     
     # pprint(instance_dat)
     return 0
