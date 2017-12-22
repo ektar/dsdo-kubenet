@@ -83,7 +83,7 @@ setup(
         'console_scripts': [
             'create-kops-config=dsdo_kubenet.scripts.create_kops_config:main',
             'fetch-instance-info=dsdo_kubenet.scripts.fetch_instance_info:main',
-            'install-cert-manager=dsdo_kubenet.scripts.install_cert_manager:main',
+            'create-certs=dsdo_kubenet.scripts.create_certs:main',
             'launch-ingress=dsdo_kubenet.scripts.launch_ingress:main',
             'launch-ldap=dsdo_kubenet.scripts.launch_ldap:main',
             'launch-terminal=dsdo_kubenet.scripts.launch_terminal:main',

@@ -4,5 +4,7 @@ dependencies:
 - ipython
 - pip:
   - boto3
+  - certbot
+  - certbot-external-auth
   - kubernetes
   - jinja2
