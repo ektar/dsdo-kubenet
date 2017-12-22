@@ -43,27 +43,16 @@ spec:
               name: ldap
       volumes:
         - name: ldap-data
-          nfs:
-            path: /system/ldap/config
-            server: fs-6c3ce725.efs.us-east-1.amazonaws.com
-            readOnly: false
-        - name: ldap-config
-          nfs:
-            path: /system/ldap/data
-            server: fs-6c3ce725.efs.us-east-1.amazonaws.com
-            readOnly: false
+          persistentVolumeClaim:
+            claimName: ldap-data
         - name: ldap-certs
-          nfs:
-            path: /system/ldap/certs
-            server: fs-6c3ce725.efs.us-east-1.amazonaws.com
-            readOnly: false
-        - name: "secret-volume"
-          secret:
-            secretName: "ldap-secret"
-        - name: efs-root
-          nfs:
-            path: /
-            server: fs-6c3ce725.efs.us-east-1.amazonaws.com
-            readOnly: false
+          persistentVolumeClaim:
+            claimName: ldap-data
+        - name: ldap-config
+          persistentVolumeClaim:
+            claimName: ldap-data
+        # - name: "secret-volume"
+        #   secret:
+        #     secretName: "ldap-secret"
         - name: container-run
           emptyDir: {}

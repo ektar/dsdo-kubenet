@@ -30,6 +30,14 @@ def create_certs(create_resources=True, config=None):
     domain_name = config['general']['domain']
     cluster_name = config['kops']['cluster_name']
 
+    le_prefix = config['general']['lets_encrypt_prefix']
+
+    in_production = config['general']['in_production'].upper() == 'TRUE'
+    if in_production:
+        staging_flag = ''
+    else:
+        staging_flag = '--staging'
+
     domains = {
         'ldap': 'ldap.internal.{}.{}'.format(
             cluster_name, domain_name),
@@ -44,52 +52,27 @@ def create_certs(create_resources=True, config=None):
         --configurator certbot-external-auth:out \
         --certbot-external-auth:out-dehydrated-dns \
         --certbot-external-auth:out-handler {r53_script} \
-        --staging \
+        {staging_flag} \
         -d {domain} \
-        --work-dir /tmp/le-work/ --logs-dir /tmp/le-logs/ --config-dir /tmp/le-config/ \
+        --work-dir {le_prefix}work/ --logs-dir {le_prefix}logs/ --config-dir {le_prefix}config/ \
         certonly
     """
 
     for k, domain in domains.items():
-        # print(k, v)
-        # print(cmd_template.format(domain=v, r53_script=route53_script))
         log.info('Creating domain {} for {}'.format(domain, k))
 
-        cmd = cmd_template.format(domain=domain, r53_script=route53_script)
+        cmd = cmd_template.format(domain=domain, 
+          r53_script=route53_script, 
+          le_prefix=le_prefix,
+          staging_flag=staging_flag)
+          
+        log.info('Running command {}'.format(cmd))
 
         process = sp.Popen(shlex.split(cmd), stdout=sp.PIPE)
         for c in iter(lambda: process.stdout.read(1), b''):
             sys.stdout.write(c.decode('utf-8'))
 
     return 0
-    
-
-    # resources = [
-    #     # 'ldap-namespace',
-    #     # 'ldap-volumes',
-    #     # 'ldap-deployment',
-    #     # 'ldap-service',
-    #     # 'ldap-ui-deployment',
-    #     # 'ldap-ui-service',
-    #     # 'ldap-ui-ingress'
-    # ]
-    
-    # if not create_resources:
-    #     resources = resources[::-1]
-    
-    # for resource_name in resources:
-    #     with manifest_dir.joinpath("{}.yaml".format(resource_name)).open() as f:
-    #         resources = yaml.load_all(f)
-          
-    #         for resource in resources:
-    #             if create_resources:
-    #                 log.info('Creating resource {}'.format(resource['kind']))
-    
-    #                 kube_common.create_resource(resource)
-    #             else:
-    #                 log.info('Deleting resource {}'.format(resource['kind']))
-    
-    #                 kube_common.delete_resource(resource)
 
 
 def main():

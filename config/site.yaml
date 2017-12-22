@@ -4,6 +4,8 @@ general:
   organization: "Data Science and DevOps"
   domain: "ds-do.com"
   admin_email: "eric@ds-do.com"
+  lets_encrypt_prefix: "/tmp/le-"
+  in_production: "False"
 
 ldap:
   base: "dc=ds-do,dc=com"
@@ -12,9 +14,9 @@ ldap:
   config_password: "<prompt>"
 
 initial_users:
-- first_name: "User"
-  last_name: "One"
-  username: "user_one"
+- first_name: "Eric"
+  last_name: "Carlson"
+  username: "ecarlson"
   user_id: 
   ssh_key: 
 - first_name: "User"

@@ -39,13 +39,19 @@ class DispatchTable():
                 'Namespace': {'func': k8s.create_namespace, 'namespaced': False},
                 'ConfigMap': {'func': k8s.create_namespaced_config_map, 'namespaced': True},
                 'ServiceAccount': {'func': k8s.create_namespaced_service_account, 'namespaced': True},
-                'Service': {'func': k8s.create_namespaced_service, 'namespaced': True}
+                'Service': {'func': k8s.create_namespaced_service, 'namespaced': True},
+                'PersistentVolumeClaim': {'func': k8s.create_namespaced_persistent_volume_claim, 'namespaced': True},
+                'PersistentVolume': {'func': k8s.create_persistent_volume, 'namespaced': False},
+                'Secret': {'func': k8s.create_namespaced_secret, 'namespaced': True}
             },
             'delete': {
                 'Namespace': {'func': partial(k8s.delete_namespace, body={}), 'namespaced': False},
                 'ConfigMap': {'func': partial(k8s.delete_namespaced_config_map, body={}), 'namespaced': True},
                 'ServiceAccount': {'func': partial(k8s.delete_namespaced_service_account, body={}), 'namespaced': True},
-                'Service': {'func': k8s.delete_namespaced_service, 'namespaced': True}
+                'Service': {'func': k8s.delete_namespaced_service, 'namespaced': True},
+                'PersistentVolumeClaim': {'func': k8s.create_namespaced_persistent_volume_claim, 'namespaced': True},
+                'PersistentVolume': {'func': k8s.create_persistent_volume, 'namespaced': False},
+                'Secret': {'func': k8s.delete_namespaced_secret, 'namespaced': True}
             }
         }
         return dispatch_table
@@ -97,6 +103,7 @@ def create_resource(resource):
     except KeyError as e:
         msg = 'Resource "{}" not found in dispatch table for api "{}"'.format(
             resource['kind'], resource['apiVersion'])
+        # set_trace()
         log.error(msg)
         raise Exception(msg)
     except kube_rest.ApiException as e:
