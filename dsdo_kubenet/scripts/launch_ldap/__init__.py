@@ -5,6 +5,7 @@ from ...lib import cluster_conf
 
 import argparse
 import base64
+from jinja2 import Template
 import json
 from kubernetes import client, config
 import kubernetes.client.rest as kube_rest
@@ -17,6 +18,24 @@ from ipdb import set_trace
 
 
 log_name = "dsdo.launch_ldap"
+
+
+def load_certs(le_prefix, domains):
+    certs = {}
+    for prefix, domain in domains.items():
+        base_path = pl.Path(le_prefix+'config').joinpath('live').joinpath(domain)
+        with base_path.joinpath('privkey.pem').open('rb') as f:
+            private_key = f.read()
+        with base_path.joinpath('cert.pem').open('rb') as f:
+            cert = f.read()
+
+        private_key_b64 = base64.b64encode(private_key)
+        cert_b64 = base64.b64encode(cert)
+        certs[prefix] = {
+            'key': private_key_b64.decode('utf-8'),
+            'crt': cert_b64.decode('utf-8')
+        }
+    return certs
 
 
 def launch_ldap(create_resources=True, config=None):
@@ -36,20 +55,7 @@ def launch_ldap(create_resources=True, config=None):
             cluster_name, domain_name),
         }
 
-    certs = {}
-    for prefix, domain in domains.items():
-        base_path = pl.Path(le_prefix+'config').joinpath('live').joinpath(domain)
-        with base_path.joinpath('privkey.pem').open('rb') as f:
-            private_key = f.read()
-        with base_path.joinpath('cert.pem').open('rb') as f:
-            cert = f.read()
-
-        private_key_b64 = base64.b64encode(private_key)
-        cert_b64 = base64.b64encode(cert)
-        certs[prefix] = {
-            'key': private_key_b64.decode('utf-8'),
-            'crt': cert_b64.decode('utf-8')
-        }
+    certs = load_certs(le_prefix, domains)
 
     resources = [
         'ldap-namespace',
@@ -67,22 +73,12 @@ def launch_ldap(create_resources=True, config=None):
     
     for resource_name in resources:
         with manifest_dir.joinpath("{}.yaml".format(resource_name)).open() as f:
-            resources = yaml.load_all(f)
+            t = Template(f.read())
+            filled_t = t.render(
+                certs=certs)
+            resources = yaml.load_all(filled_t)
           
             for resource in resources:
-                if resource_name == 'ldap-secrets':
-                    val = resource['data']['tls.key']
-                    val = val.replace('<','').replace('>','')
-                    sub_dom, tls_part = val.split(':')
-                    tls_val = certs[sub_dom.lower()][tls_part.lower()]
-                    resource['data']['tls.key'] = tls_val
-
-                    val = resource['data']['tls.crt']
-                    val = val.replace('<','').replace('>','')
-                    sub_dom, tls_part = val.split(':')
-                    tls_val = certs[sub_dom.lower()][tls_part.lower()]
-                    resource['data']['tls.crt'] = tls_val
-
                 if create_resources:
                     log.info('Creating resource {}'.format(resource['kind']))
     

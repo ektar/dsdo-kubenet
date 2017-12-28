@@ -1,0 +1,23 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ca-key
+  namespace: ldap
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 25M
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ca-cert
+  namespace: ldap
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 25M
