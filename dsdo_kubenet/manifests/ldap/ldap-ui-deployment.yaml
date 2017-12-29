@@ -24,7 +24,7 @@ spec:
             - containerPort: 80
           env:
             - name: PHPLDAPADMIN_LDAP_HOSTS
-              value: "ldap.default"
+              value: "ldap.ldap"
             - name: PHPLDAPADMIN_SERVER_ADMIN
               value: "eric@ds-do.com"
             - name: PHPLDAPADMIN_SERVER_PATH

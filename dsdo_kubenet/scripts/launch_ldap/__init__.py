@@ -5,6 +5,7 @@ from ...lib import cluster_conf
 
 import argparse
 import base64
+from getpass import getpass
 from jinja2 import Template
 import json
 from kubernetes import client, config
@@ -28,14 +29,45 @@ def load_certs(le_prefix, domains):
             private_key = f.read()
         with base_path.joinpath('cert.pem').open('rb') as f:
             cert = f.read()
+        with base_path.joinpath('fullchain.pem').open('rb') as f:
+            fullchain = f.read()
 
         private_key_b64 = base64.b64encode(private_key)
         cert_b64 = base64.b64encode(cert)
+        fullchain_b64 = base64.b64encode(fullchain)
         certs[prefix] = {
             'key': private_key_b64.decode('utf-8'),
-            'crt': cert_b64.decode('utf-8')
+            'crt': cert_b64.decode('utf-8'),
+            'fullchain': fullchain_b64.decode('utf-8')
         }
     return certs
+
+
+def load_org_info(config):
+    org_info = {}
+    
+    org_info['organization'] = config['general']['organization']
+    org_info['domain'] = config['general']['domain']
+    org_info['base_dn'] = config['ldap']['base']
+
+    for user in ['admin', 'config', 'read-only']:
+        org_info['pw-{}'.format(user)] = getpass('Enter password for {}: '.format(user))
+    
+    return org_info
+
+
+def load_startup_configs(config, org_info, manifest_dir):
+    startup_configs = {}
+    for config_name in ['env.yaml', 'env.startup.yaml']:
+        with manifest_dir.joinpath("{}".format(config_name)).open() as f:
+            t = Template(f.read())
+            filled_t = t.render(
+                org_info=org_info)
+            config = base64.b64encode(filled_t.encode('utf-8')).decode('utf-8')
+            startup_configs[config_name] = config
+            
+    return startup_configs
+
 
 
 def launch_ldap(create_resources=True, config=None):
@@ -56,13 +88,15 @@ def launch_ldap(create_resources=True, config=None):
         }
 
     certs = load_certs(le_prefix, domains)
+    org_info = load_org_info(config)
+    startup_configs = load_startup_configs(config, org_info, manifest_dir)
 
     resources = [
         'ldap-namespace',
         'ldap-secrets',
         'ldap-volumes',
-        # 'ldap-deployment',
-        # 'ldap-service',
+        'ldap-deployment',
+        'ldap-service',
         # 'ldap-ui-deployment',
         # 'ldap-ui-service',
         # 'ldap-ui-ingress'
@@ -75,7 +109,8 @@ def launch_ldap(create_resources=True, config=None):
         with manifest_dir.joinpath("{}.yaml".format(resource_name)).open() as f:
             t = Template(f.read())
             filled_t = t.render(
-                certs=certs)
+                certs=certs,
+                startup_configs=startup_configs)
             resources = yaml.load_all(filled_t)
           
             for resource in resources:
@@ -84,9 +119,14 @@ def launch_ldap(create_resources=True, config=None):
     
                     kube_common.create_resource(resource)
                 else:
-                    log.info('Deleting resource {}'.format(resource['kind']))
+                    proceed = True
+                    if resource['kind'] in ['Namespace', 'PersistentVolumeClaim']:
+                        proceed = input('Delete {}?  [yes/NO]'.format(resource_name)) == 'yes'
+
+                    if proceed:
+                        log.info('Deleting resource {}'.format(resource['kind']))
     
-                    kube_common.delete_resource(resource)
+                        kube_common.delete_resource(resource)
 
 
 def main():

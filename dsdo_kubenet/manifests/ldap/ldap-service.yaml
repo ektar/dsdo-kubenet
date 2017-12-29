@@ -3,6 +3,7 @@ kind: Service
 metadata:
   labels:
     app: ldap
+    state: blue
   name: ldap
   namespace: ldap
   annotations:
@@ -10,9 +11,14 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 389
-      nodePort: 30389
+    # Removed to only allow TLS ldap connections
+    # - port: 389
+    #   nodePort: 30389
+    #   protocol: TCP
+    #   name: ldap
+    - port: 636
+      nodePort: 30636
       protocol: TCP
-      name: ldap
+      name: ldap-tls
   selector:
     app: ldap

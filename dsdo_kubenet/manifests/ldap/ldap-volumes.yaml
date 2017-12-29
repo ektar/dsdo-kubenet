@@ -1,7 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: ldap-data
+  name: ldap-database-1
   namespace: ldap
 spec:
   accessModes:
@@ -9,23 +9,11 @@ spec:
   resources:
     requests:
       storage: 25M
-# ---
-# kind: PersistentVolumeClaim
-# apiVersion: v1
-# metadata:
-#   name: ldap-certs
-#   namespace: ldap
-# spec:
-#   accessModes:
-#     - ReadWriteOnce
-#   resources:
-#     requests:
-#       storage: 25M
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: ldap-config
+  name: ldap-config-1
   namespace: ldap
 spec:
   accessModes:

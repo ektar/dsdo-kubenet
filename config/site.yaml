@@ -5,7 +5,7 @@ general:
   domain: "ds-do.com"
   admin_email: "eric@ds-do.com"
   lets_encrypt_prefix: "/tmp/le-"
-  in_production: "False"
+  in_production: "True"
 
 ldap:
   base: "dc=ds-do,dc=com"

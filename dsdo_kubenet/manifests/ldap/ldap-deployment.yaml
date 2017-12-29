@@ -11,48 +11,40 @@ spec:
     metadata:
       labels:
         app: ldap
+        state: blue
     spec:
-      initContainers:
-        - name: init-ldap
-          image: ektar/linux-base:1.0
-          command: ["mkdir", "-p",
-                    "/mnt/efs/system/ldap/config",
-                    "/mnt/efs/system/ldap/data",
-                    "/mnt/efs/system/ldap/certs",
-                    "/mnt/efs/system/ldap/iwashere"]
-          volumeMounts:
-            - name: efs-root
-              mountPath: /mnt/efs
       containers:
         - name: ldap
-          image: ektar/ldap:1.1.9
+          image: ektar/ldap:v1.1.11
           args: ["--copy-service"]
           volumeMounts:
-            - name: ldap-data
+            - name: ldap-database
               mountPath: /var/lib/ldap
             - name: ldap-config
               mountPath: /etc/ldap/slapd.d
             - name: ldap-certs
               mountPath: /container/service/slapd/assets/certs
-            - name: secret-volume
+            - name: ldap-startup-config
               mountPath: /container/environment/01-custom
             - name: container-run
               mountPath: /container/run
           ports:
             - containerPort: 389
               name: ldap
+            - containerPort: 636
+              name: ldap-tls
       volumes:
-        - name: ldap-data
+        - name: ldap-database
           persistentVolumeClaim:
-            claimName: ldap-data
-        - name: ldap-certs
-          persistentVolumeClaim:
-            claimName: ldap-data
+            claimName: ldap-database-1
         - name: ldap-config
           persistentVolumeClaim:
-            claimName: ldap-data
-        # - name: "secret-volume"
-        #   secret:
-        #     secretName: "ldap-secret"
+            claimName: ldap-config-1
+        - name: ldap-certs
+          secret:
+            secretName: ldap-tls
+        - name: ldap-startup-config
+          secret:
+            secretName: ldap-startup-config
         - name: container-run
           emptyDir: {}
