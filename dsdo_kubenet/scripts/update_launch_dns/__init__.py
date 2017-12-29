@@ -30,12 +30,12 @@ def update_launch_dns(config):
     hosted_zone = config['general']['domain']
     launch_fqdn = 'launch.{}'.format(hosted_zone)
 
-    zones = client.list_hosted_zones_by_name(DNSName="{0}.".format(hosted_zone))
+    zones = client.list_hosted_zones_by_name(
+        DNSName="{0}.".format(hosted_zone),
+        MaxItems="1")
     zone = zones['HostedZones'][0]
 
     zone_id = zone['Id'].replace('/hostedzone/', '')
-
-    # set_trace()
 
     response = client.change_resource_record_sets(
   		HostedZoneId=zone_id,
