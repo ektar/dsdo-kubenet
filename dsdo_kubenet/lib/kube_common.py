@@ -49,9 +49,9 @@ class DispatchTable():
                 'ConfigMap': {'func': partial(k8s.delete_namespaced_config_map, body={}), 'namespaced': True},
                 'ServiceAccount': {'func': partial(k8s.delete_namespaced_service_account, body={}), 'namespaced': True},
                 'Service': {'func': k8s.delete_namespaced_service, 'namespaced': True},
-                'PersistentVolumeClaim': {'func': k8s.create_namespaced_persistent_volume_claim, 'namespaced': True},
-                'PersistentVolume': {'func': k8s.create_persistent_volume, 'namespaced': False},
-                'Secret': {'func': k8s.delete_namespaced_secret, 'namespaced': True}
+                'PersistentVolumeClaim': {'func': partial(k8s.delete_namespaced_persistent_volume_claim, body={}), 'namespaced': True},
+                'PersistentVolume': {'func': k8s.delete_persistent_volume, 'namespaced': False},
+                'Secret': {'func': partial(k8s.delete_namespaced_secret, body={}), 'namespaced': True}
             }
         }
         return dispatch_table
@@ -59,6 +59,12 @@ class DispatchTable():
     @staticmethod
     def _make_dispatch_extensions_v1beta1():
         k8s = client.ExtensionsV1beta1Api()
+        
+        no_orphans_body = client.V1DeleteOptions(
+            grace_period_seconds=0,
+            propagation_policy="Foreground"
+            )
+        
         dispatch_table = {
             'create': {
                 'Deployment': {'func': k8s.create_namespaced_deployment, 'namespaced': True},
@@ -66,8 +72,8 @@ class DispatchTable():
                 'Ingress': {'func': k8s.create_namespaced_ingress, 'namespaced': True}
             },
             'delete': {
-                'Deployment': {'func': partial(k8s.delete_namespaced_deployment, body={}), 'namespaced': True},
-                'DaemonSet': {'func': partial(k8s.delete_namespaced_daemon_set, body={}), 'namespaced': True},
+                'Deployment': {'func': partial(k8s.delete_namespaced_deployment, body=no_orphans_body), 'namespaced': True},
+                'DaemonSet': {'func': partial(k8s.delete_namespaced_daemon_set, body=no_orphans_body), 'namespaced': True},
                 'Ingress': {'func': partial(k8s.delete_namespaced_ingress, body={}), 'namespaced': True}
             }
         }
@@ -103,7 +109,6 @@ def create_resource(resource):
     except KeyError as e:
         msg = 'Resource "{}" not found in dispatch table for api "{}"'.format(
             resource['kind'], resource['apiVersion'])
-        # set_trace()
         log.error(msg)
         raise Exception(msg)
     except kube_rest.ApiException as e:
