@@ -3,14 +3,16 @@ kind: Ingress
 metadata:
   name: ldap-ui
   namespace: ldap
-  annotations:
-    dns.alpha.kubernetes.io/internal: ldap-ui.internal.kube.ds-do.com
 spec:
+  tls:
+  - hosts:
+    - "ldap-ui.internal.{{ org_info['cluster_name'] }}.{{ org_info['domain'] }}"
+    secretName: ldap-ui-tls
   rules:
-    - host: ldap-ui.internal.kube.ds-do.com
+    - host: "ldap-ui.internal.{{ org_info['cluster_name'] }}.{{ org_info['domain'] }}"
       http:
         paths:
-        - path: /ldap-ui
+        - path: /
           backend:
             serviceName: ldap-ui
             servicePort: 80

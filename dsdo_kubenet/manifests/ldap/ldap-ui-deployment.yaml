@@ -14,41 +14,36 @@ spec:
     spec:
       containers:
         - name: ldap-ui
-          image: ektar/ldap-ui:0.7.1
+          image: ektar/ldap-ui:v0.7.1
           volumeMounts:
-            - name: phpldapadmin-certs
+            - name: ldap-ui-certs
               mountPath: /container/service/phpldapadmin/assets/apache2/certs
             - name: ldap-client-certs
               mountPath: /container/service/ldap-client/assets/certs
+          args: ["--loglevel", "debug"]
           ports:
             - containerPort: 80
           env:
             - name: PHPLDAPADMIN_LDAP_HOSTS
               value: "ldap.ldap"
             - name: PHPLDAPADMIN_SERVER_ADMIN
-              value: "eric@ds-do.com"
+              value: "{{ org_info['admin_email'] }}"
             - name: PHPLDAPADMIN_SERVER_PATH
-              value: "/ldap-ui"
+              value: "/"
             - name: PHPLDAPADMIN_HTTPS
               value: "false"
-            - name: PHPLDAPADMIN_HTTPS_CRT_FILENAME
-              value: "cert.crt"
-            - name: PHPLDAPADMIN_HTTPS_KEY_FILENAME
-              value: "cert.key"
-            - name: PHPLDAPADMIN_HTTPS_CA_CRT_FILENAME
-              value: "ca.crt"
+            - name: PHPLDAPADMIN_TRUST_PROXY_SSL
+              value: "true"
             - name: PHPLDAPADMIN_LDAP_CLIENT_TLS
               value: "false"
             - name: PHPLDAPADMIN_LDAP_CLIENT_TLS_REQCERT
-              value: "demand"
-            - name: PHPLDAPADMIN_LDAP_CLIENT_TLS_CRT_FILENAME
-              value: "cert.crt"
-            - name: PHPLDAPADMIN_LDAP_CLIENT_TLS_KEY_FILENAME
-              value: "cert.key"
+              value: "allow"
             - name: PHPLDAPADMIN_LDAP_CLIENT_TLS_CA_CRT_FILENAME
               value: "ca.crt"
       volumes:
-        - name: phpldapadmin-certs
-          emptyDir: {}
+        - name: ldap-ui-certs
+          secret:
+            secretName: ldap-ui-tls
         - name: ldap-client-certs
-          emptyDir: {}
+          secret:
+            secretName: ldap-client-tls

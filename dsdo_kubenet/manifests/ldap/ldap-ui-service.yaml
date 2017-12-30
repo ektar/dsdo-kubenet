@@ -6,7 +6,10 @@ metadata:
     app: ldap-ui
   name: ldap-ui
   namespace: ldap
+  annotations:
+    dns.alpha.kubernetes.io/internal: "ldap-ui.internal.{{ org_info['cluster_name'] }}.{{ org_info['domain'] }}"
 spec:
+  Type: NodePort
   ports:
     - port: 80
   selector:

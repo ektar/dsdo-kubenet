@@ -48,7 +48,9 @@ def load_org_info(config):
     
     org_info['organization'] = config['general']['organization']
     org_info['domain'] = config['general']['domain']
+    org_info['admin_email'] = config['general']['admin_email']
     org_info['base_dn'] = config['ldap']['base']
+    org_info['cluster_name'] = config['kops']['cluster_name']
 
     for user in ['admin', 'config', 'read-only']:
         org_info['pw-{}'.format(user)] = getpass('Enter password for {}: '.format(user))
@@ -97,9 +99,9 @@ def launch_ldap(create_resources=True, config=None):
         'ldap-volumes',
         'ldap-deployment',
         'ldap-service',
-        # 'ldap-ui-deployment',
-        # 'ldap-ui-service',
-        # 'ldap-ui-ingress'
+        'ldap-ui-deployment',
+        'ldap-ui-service',
+        'ldap-ui-ingress'
     ]
     
     if not create_resources:
@@ -110,7 +112,8 @@ def launch_ldap(create_resources=True, config=None):
             t = Template(f.read())
             filled_t = t.render(
                 certs=certs,
-                startup_configs=startup_configs)
+                startup_configs=startup_configs,
+                org_info=org_info)
             resources = yaml.load_all(filled_t)
           
             for resource in resources:
