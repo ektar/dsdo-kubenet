@@ -60,7 +60,7 @@ def load_org_info(config):
 
 def load_startup_configs(config, org_info, manifest_dir):
     startup_configs = {}
-    for config_name in ['env.yaml', 'env.startup.yaml']:
+    for config_name in ['env.yaml', 'env.startup.yaml', 'seed.ldif']:
         with manifest_dir.joinpath("{}".format(config_name)).open() as f:
             t = Template(f.read())
             filled_t = t.render(

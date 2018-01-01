@@ -1,0 +1,72 @@
+# users, {{ org_info['domain'] }}
+dn: ou=users,{{ org_info['base_dn'] }}
+ou: users
+objectClass: organizationalUnit
+objectClass: top
+
+# Eric Carlson, users, {{ org_info['domain'] }}
+dn: cn=Eric Carlson,ou=users,{{ org_info['base_dn'] }}
+cn: Eric Carlson
+gidNumber: 5500
+givenName: Eric
+homeDirectory: /home/users/jfrank
+loginShell: /bin/bash
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+objectClass: ldapPublicKey
+sn: Carlson
+sshPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCyg8pwWrzdMqWVLYcUx/CXhNdh
+ hbvynt+c+jaYjLfszd/bkeaw+ucUaVXGvuxMN3Fan7bsTpLB2tBLgAY5JF3S1bkLOwe6M/p0y4mun
+ CawclxQmL+6NL+3ml6Iu+XWolIK9s7kqmkHwsbn7Lk4qMwZHAohP2kNbVWPjoqo+p2NACVsnQL2wn
+ GqvUOQXc/wOBP+T6alS6wiOKsZsR32tB340fFkLyJBVTl8YsbfAcVyKL3/o4P7JQR5UB+49V26RYv
+ xE+8NAesHHkb+AEM1Wx4I3ApK4MsA5dz4jybfPwno0WHZzqgpKlOLwmh7m3qD3DF1J3or890AnVxD
+ St4gOWYNnb3k4gT/yixGeFnj8feG8YKutXGkdbpRfsbdpusELh7E8WNzwmY/1+zhOWQPWwgxu/52O
+ lmRrOtIEtZSbvhd1W6ywXdhQyzkttssmUBBQA21RsKEUbsA84DxneSzbzbHRFPJ3MKomTxrWaBjZr
+ ssg4ths5b6wV8CliFn1dNwzrKH65+wZ0BiGPBK8GTbUbabVhFQB1G5INefpwYa1sPciG1tNoIq463
+ WmaSgh+U9Y8tUqhicpI04SqNwu56FULsYUNIkJ1m72jD0ZhGItSovK12OPaqe9yMf3NK1E4lJ860V
+ hcfsPfeIjZX+L2CH0I6HzvVEmsclJ3Nuho+TY7alkQ== ecarlson@datasciencedevops.com
+uidNumber: 5100
+uid: ecarlson
+
+# groups, {{ org_info['domain'] }}
+dn: ou=groups,{{ org_info['base_dn'] }}
+ou: groups
+objectClass: organizationalUnit
+objectClass: top
+
+# scientists, groups, {{ org_info['domain'] }}
+dn: cn=scientists,ou=groups,{{ org_info['base_dn'] }}
+cn: scientists
+objectClass: posixGroup
+objectClass: top
+gidNumber: 5500
+memberUid: ecarlson
+
+# admins, groups, {{ org_info['domain'] }}
+dn: cn=admins,ou=groups,{{ org_info['base_dn'] }}
+cn: admins
+objectClass: posixGroup
+objectClass: top
+gidNumber: 5501
+memberUid: ecarlson
+
+# roles, {{ org_info['domain'] }}
+dn: ou=roles,{{ org_info['base_dn'] }}
+ou: roles
+objectClass: organizationalUnit
+objectClass: top
+
+# shell_access, roles, {{ org_info['domain'] }}
+dn: cn=shell_access,ou=roles,{{ org_info['base_dn'] }}
+cn: shell_access
+objectClass: groupOfUniqueNames
+objectClass: top
+uniqueMember: cn=Eric Carlson,ou=users,{{ org_info['base_dn'] }}
+
+# bastion_access, roles, {{ org_info['domain'] }}
+dn: cn=bastion,ou=roles,{{ org_info['base_dn'] }}
+cn: bastion
+objectClass: groupOfUniqueNames
+objectClass: top
+uniqueMember: cn=Eric Carlson,ou=users,{{ org_info['base_dn'] }}

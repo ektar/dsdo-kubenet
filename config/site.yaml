@@ -7,28 +7,30 @@ general:
   lets_encrypt_prefix: "/tmp/le-"
   in_production: "True"
 
-ldap:
-  base: "dc=ds-do,dc=com"
-  admin_password: "<prompt>"
-  readonly_password: "<prompt>"
-  config_password: "<prompt>"
-
-initial_users:
-- first_name: "Eric"
-  last_name: "Carlson"
-  username: "ecarlson"
-  user_id: 
-  ssh_key: 
-- first_name: "User"
-  last_name: "Two"
-  username: "user_two"
-  user_id: 
-  ssh_key: 
-
+# Notes:
+# cluster_name gets appended to general.domain
 kops:
   state_store_name: "dsdo-k8s-state-store-2"
   cluster_name: "kube"
 
-# Notes:
-# cluster_name gets appended to general.domain
+ldap:
+  base: "dc=ds-do,dc=com"
+  initial_users:
+  - first_name: "Eric"
+    last_name: "Carlson"
+    username: "ecarlson"
+    user_id: 5100
+    ssh_key: ecarlson.pub
+  - first_name: "User"
+    last_name: "Two"
+    username: "user_two"
+    user_id: 5101
+    ssh_key: user_two.pub
+  admins:
+  - ecarlson
+  shell_access:
+  - ecarlson
+  - user_two
+  bastion_access:
+  - ecarlson
 

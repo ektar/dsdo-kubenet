@@ -26,6 +26,8 @@ spec:
               mountPath: /container/service/slapd/assets/certs
             - name: ldap-startup-config
               mountPath: /container/environment/01-custom
+            - name: ldap-seed
+              mountPath: /container/service/slapd/assets/config/bootstrap/ldif/custom/
             - name: container-run
               mountPath: /container/run
           ports:
@@ -46,5 +48,8 @@ spec:
         - name: ldap-startup-config
           secret:
             secretName: ldap-startup-config
+        - name: ldap-seed
+          secret:
+            secretName: ldap-seed
         - name: container-run
           emptyDir: {}
