@@ -44,6 +44,8 @@ def load_certs(le_prefix, domains):
 
 
 def load_org_info(config):
+    log = logging.getLogger(log_name)
+
     org_info = {}
     
     org_info['organization'] = config['general']['organization']
@@ -55,6 +57,24 @@ def load_org_info(config):
     for user in ['admin', 'config', 'read-only']:
         org_info['pw-{}'.format(user)] = getpass('Enter password for {}: '.format(user))
     
+    org_info['initial_users'] = config['ldap']['initial_users']
+    org_info['admins'] = config['ldap']['admins']
+
+    user_dict = {}
+    for user in org_info['initial_users']:
+        with pl.Path(user['ssh_pubkey_file']).expanduser().open('r') as f:
+            user['ssh_key'] = f.read()
+        user_dict[user['username']] = user
+
+    # The "memberof" directive takes full ldap cn's rather than usernames    
+    org_info['bastion_access'] = []
+    for un in config['ldap']['bastion_access']:
+        user = user_dict[un]
+        user_path = "cn={} {},ou=users,{}".format(
+            user['first_name'], user['last_name'],
+            org_info['base_dn'])
+        org_info['bastion_access'].append(user_path)
+
     return org_info
 
 
@@ -62,7 +82,7 @@ def load_startup_configs(config, org_info, manifest_dir):
     startup_configs = {}
     for config_name in ['env.yaml', 'env.startup.yaml', 'seed.ldif']:
         with manifest_dir.joinpath("{}".format(config_name)).open() as f:
-            t = Template(f.read())
+            t = Template(f.read(), trim_blocks=True)
             filled_t = t.render(
                 org_info=org_info)
             config = base64.b64encode(filled_t.encode('utf-8')).decode('utf-8')
@@ -145,7 +165,8 @@ def main():
     config.load_kube_config()
     
     create_resources = not args.delete
-    launch_ldap(create_resources=create_resources, config=config_file)
+    launch_ldap(create_resources=create_resources, 
+                config=config_file)
     
     return 0
 

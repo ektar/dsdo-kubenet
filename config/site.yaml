@@ -20,17 +20,14 @@ ldap:
     last_name: "Carlson"
     username: "ecarlson"
     user_id: 5100
-    ssh_key: ecarlson.pub
+    ssh_pubkey_file: ~/.ssh/ecarlson.pub
   - first_name: "User"
     last_name: "Two"
     username: "user_two"
     user_id: 5101
-    ssh_key: user_two.pub
+    ssh_pubkey_file: ~/.ssh/user_two.pub
   admins:
   - ecarlson
-  shell_access:
-  - ecarlson
-  - user_two
   bastion_access:
   - ecarlson
 
