@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: bastion
+  labels:
+    app: bastion
+  namespace: dsdo-system
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: bastion
+        state: blue
+    spec:
+      containers:
+        - name: bastion
+          image: ektar/linux-ldap:v1.1.2
+          #command: ["tail", "-f", "/var/log/dmesg"]
+          # volumeMounts:
+          #   - name: ldap-database
+          #     mountPath: /var/lib/ldap
+          #   - name: ldap-config
+          #     mountPath: /etc/ldap/slapd.d
+          #   - name: ldap-certs
+          #     mountPath: /container/service/slapd/assets/certs
+          #   - name: ldap-startup-config
+          #     mountPath: /container/environment/01-custom
+          #   - name: ldap-seed
+          #     mountPath: /container/service/slapd/assets/config/bootstrap/ldif/custom/
+          #   - name: container-run
+          #     mountPath: /container/run
+          ports:
+            - containerPort: 22
+              name: ssh
+      # volumes:
+      #   - name: ldap-database
+      #     persistentVolumeClaim:
+      #       claimName: ldap-database-1
+      #   - name: ldap-config
+      #     persistentVolumeClaim:
+      #       claimName: ldap-config-1
+      #   - name: ldap-certs
+      #     secret:
+      #       secretName: ldap-tls
+      #   - name: ldap-startup-config
+      #     secret:
+      #       secretName: ldap-startup-config
+      #   - name: ldap-seed
+      #     secret:
+      #       secretName: ldap-seed
+      #   - name: container-run
+      #     emptyDir: {}

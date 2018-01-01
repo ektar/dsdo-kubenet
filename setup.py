@@ -82,8 +82,10 @@ setup(
     entry_points={
         'console_scripts': [
             'create-kops-config=dsdo_kubenet.scripts.create_kops_config:main',
+            'dsdo-prep=dsdo_kubenet.scripts.dsdo_prep:main',
             'fetch-instance-info=dsdo_kubenet.scripts.fetch_instance_info:main',
             'create-certs=dsdo_kubenet.scripts.create_certs:main',
+            'launch-bastion=dsdo_kubenet.scripts.launch_bastion:main',
             'launch-ingress=dsdo_kubenet.scripts.launch_ingress:main',
             'launch-ldap=dsdo_kubenet.scripts.launch_ldap:main',
             'launch-terminal=dsdo_kubenet.scripts.launch_terminal:main',
