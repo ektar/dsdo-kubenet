@@ -15,39 +15,32 @@ spec:
     spec:
       containers:
         - name: bastion
-          image: ektar/linux-ldap:v1.1.2
+          image: ektar/linux-ldap:v1.1.3
           #command: ["tail", "-f", "/var/log/dmesg"]
-          # volumeMounts:
-          #   - name: ldap-database
-          #     mountPath: /var/lib/ldap
-          #   - name: ldap-config
-          #     mountPath: /etc/ldap/slapd.d
-          #   - name: ldap-certs
-          #     mountPath: /container/service/slapd/assets/certs
-          #   - name: ldap-startup-config
-          #     mountPath: /container/environment/01-custom
-          #   - name: ldap-seed
-          #     mountPath: /container/service/slapd/assets/config/bootstrap/ldif/custom/
-          #   - name: container-run
-          #     mountPath: /container/run
+          volumeMounts:
+          - name: ldap-client-conf
+            mountPath: "/etc/sssd/sssd.conf"
+            subPath: sssd.conf
+          - name: ldap-client-conf
+            mountPath: "/etc/ldap.conf"
+            subPath: ldap.conf
+          - name: ldap-client-conf
+            mountPath: "/etc/auth-client-config/profile.d/sss"
+            subPath: sss
           ports:
             - containerPort: 22
               name: ssh
-      # volumes:
-      #   - name: ldap-database
-      #     persistentVolumeClaim:
-      #       claimName: ldap-database-1
-      #   - name: ldap-config
-      #     persistentVolumeClaim:
-      #       claimName: ldap-config-1
-      #   - name: ldap-certs
-      #     secret:
-      #       secretName: ldap-tls
-      #   - name: ldap-startup-config
-      #     secret:
-      #       secretName: ldap-startup-config
-      #   - name: ldap-seed
-      #     secret:
-      #       secretName: ldap-seed
-      #   - name: container-run
-      #     emptyDir: {}
+      volumes:
+        - name: ldap-client-conf
+          secret:
+            secretName: ldap-client-conf
+            items:
+              - key: sssd.conf
+                path: sssd.conf
+                mode: 0600
+              - key: ldap.conf
+                path: ldap.conf
+                mode: 0644
+              - key: profile.d-sss
+                path: sss
+                mode: 0644
