@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: bastion
-          image: ektar/linux-ldap:v1.1.3
+          image: ektar/linux-ldap:v1.1.4
           volumeMounts:
           - name: ldap-client-conf
             mountPath: "/etc/sssd/sssd.conf"
