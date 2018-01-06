@@ -6,6 +6,7 @@ general:
   admin_email: "eric@ds-do.com"
   lets_encrypt_prefix: "/tmp/le-"
   in_production: "True"
+  efs_name: "fs-6c3ce725.efs.us-east-1.amazonaws.com"
 
 # Notes:
 # cluster_name gets appended to general.domain

@@ -29,6 +29,7 @@ def load_org_info(config):
     org_info['admin_email'] = config['general']['admin_email']
     org_info['base_dn'] = config['ldap']['base']
     org_info['cluster_name'] = config['kops']['cluster_name']
+    org_info['efs_name'] = config['general']['efs_name']
 
     return org_info
 

@@ -48,5 +48,5 @@ spec:
         - name: nfs-home
           nfs:
             path: /home
-            server: fs-6c3ce725.efs.us-east-1.amazonaws.com
+            server: {{ org_info['efs_name'] }}
             readOnly: false
