@@ -75,6 +75,14 @@ def load_org_info(config):
             org_info['base_dn'])
         org_info['bastion_access'].append(user_path)
 
+    org_info['shell_access'] = []
+    for un in config['ldap']['shell_access']:
+        user = user_dict[un]
+        user_path = "cn={} {},ou=users,{}".format(
+            user['first_name'], user['last_name'],
+            org_info['base_dn'])
+        org_info['shell_access'].append(user_path)
+
     return org_info
 
 

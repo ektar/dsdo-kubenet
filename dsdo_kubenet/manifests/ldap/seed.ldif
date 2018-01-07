@@ -55,9 +55,18 @@ objectClass: top
 
 # bastion_access, roles, {{ org_info['domain'] }}
 dn: cn=bastion_access,ou=roles,{{ org_info['base_dn'] }}
-cn: bastion
+cn: bastion_access
 objectClass: groupOfUniqueNames
 objectClass: top
 {% for user in org_info['bastion_access'] %}
+uniqueMember: {{ user }}
+{% endfor %}
+
+# shell_access, roles, {{ org_info['domain'] }}
+dn: cn=shell_access,ou=roles,{{ org_info['base_dn'] }}
+cn: shell_access
+objectClass: groupOfUniqueNames
+objectClass: top
+{% for user in org_info['shell_access'] %}
 uniqueMember: {{ user }}
 {% endfor %}

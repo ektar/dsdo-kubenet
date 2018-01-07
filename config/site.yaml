@@ -9,7 +9,6 @@ general:
   vpc_id: "vpc-1bae0c63"
   region: "us-east-1"
   efs_subnet_id: "subnet-b0b0459f"
-  # efs_id: "fs-a5eee2ec"
   efs_id: "fs-6c3ce725"
 
 # Notes:
@@ -34,5 +33,7 @@ ldap:
   admins:
   - ecarlson
   bastion_access:
+  - ecarlson
+  shell_access:
   - ecarlson
 
