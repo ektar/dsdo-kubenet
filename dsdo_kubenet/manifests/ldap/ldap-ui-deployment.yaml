@@ -12,6 +12,15 @@ spec:
       labels:
         app: ldap-ui
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: dsdo-role
+                operator: In
+                values:
+                - admin-node
       containers:
         - name: ldap-ui
           image: ektar/ldap-ui:v0.7.1

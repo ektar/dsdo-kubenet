@@ -13,6 +13,15 @@ spec:
         app: ldap
         state: blue
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: dsdo-role
+                operator: In
+                values:
+                - admin-node
       containers:
         - name: ldap
           image: ektar/ldap:v1.1.11
