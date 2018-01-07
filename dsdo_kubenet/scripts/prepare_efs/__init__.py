@@ -17,7 +17,7 @@ from time import sleep
 import uuid
 import yaml
 
-log_name = "dsdo.create_efs"
+log_name = "dsdo.prepare_efs"
 
 
 def create_efs(region, vpc_id, subnet_id):
@@ -121,28 +121,66 @@ def find_efs(config, region, vpc_id, subnet_id):
 def get_mount_points(efs_id):
     log = logging.getLogger(log_name)
 
-    mount_points = []
-    return mount_points
+    efsc = boto3.client('efs')
+
+    resp = efsc.describe_mount_targets(
+        FileSystemId=efs_id
+        )
+    
+    return resp['MountTargets']
 
 
 def mount_point_in_vpc(mount_points, subnet_id, vpc_id):
     log = logging.getLogger(log_name)
 
     in_vpc = False
+
+    for mnt_pt in mount_points:
+        subnet_id = mnt_pt['SubnetId']
+        subnet_vpc_id = vpc_from_subnet(subnet_id)
+        if subnet_vpc_id == vpc_id:
+            in_vpc = True
+            break
+
     return in_vpc
 
 
 def create_mount_point(efs_id, subnet_id):
     log = logging.getLogger(log_name)
 
-    mount_points = []
-    return mount_points
+    efsc = boto3.client('efs')
+
+    log.info('Creating mount point (this can take a few minutes...)')
+    resp = efsc.create_mount_target(
+        FileSystemId=efs_id,
+        SubnetId=subnet_id,
+    )
+    
+    mount_target_id = resp['MountTargetId']
+
+    while resp['LifeCycleState'] != 'available':
+        log.info('Waiting for mount point to be available, currently "{}"'.format(
+            resp['LifeCycleState']))
+        sleep(10)
+        desc_resp = efsc.describe_mount_targets(
+            MountTargetId=mount_target_id
+        )
+        resp = desc_resp['MountTargets'][0]
+    
+    return mount_target_id
 
     
 def prepare_efs(efs_id, region):
     log = logging.getLogger(log_name)
 
     pass
+
+
+def vpc_from_subnet(subnet_id):
+    ec2c = boto3.client('ec2')
+    subnet_dat = ec2c.describe_subnets(SubnetIds=[subnet_id])
+    vpc_id = subnet_dat['Subnets'][0]['VpcId']
+    return vpc_id
 
 
 def region_from_av(availability_zone):
@@ -240,8 +278,6 @@ def verify_base_settings(region, vpc_id, subnet_id):
 def entry_point(config=None):
     log = logging.getLogger(log_name)
     
-    pprint(config['general'])
-
     region = get_region(config)
     vpc_id = get_vpc_id(config)
     subnet_id = get_subnet_id(config)
@@ -264,6 +300,7 @@ def entry_point(config=None):
     mount_points = get_mount_points(efs_id)
     
     if not mount_point_in_vpc(mount_points, subnet_id, vpc_id):
+        log.info('EFS has no mount points in VPC, need to create')
         create_mount_point(efs_id, subnet_id)
 
     prepare_efs(efs_id, region)
@@ -271,7 +308,7 @@ def entry_point(config=None):
 
 def main():
     log = logging.getLogger(log_name)
-    log.info("Create efs")
+    log.info("Prepare efs")
 
     parser = arguments.DSDOParser()
     args = parser.parse_args()
