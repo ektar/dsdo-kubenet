@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: efs-prep
+  labels:
+    name: efs-prep
+  namespace: dsdo-system
+spec:
+  containers:
+  - name: efs-prep
+    image: busybox
+    command: ['/bin/mkdir', '-p', '/efs_mount/home']
+    # command: ['/bin/ls', '-l', '/efs_mount/']
+    volumeMounts:
+    - name: efs-root 
+      mountPath: /efs_mount
+  restartPolicy: Never
+  volumes:
+    - name: efs-root
+      nfs:
+        path: /
+        server: {{org_info['efs_name']}}
+        # server: fs-9adbd7d3.efs.us-east-1.amazonaws.com
+        # server: fs-a5eee2ec.efs.us-east-1.amazonaws.com
+        readOnly: false

@@ -23,7 +23,8 @@ log_name = "dsdo.dsdo_prep"
 
 def load_ldap_configs(config, org_info, manifest_dir):
     ldap_configs = {}
-    for config_name in ['sssd.conf', 'ldap.conf', 'profile.d-sss']:
+    for config_name in ['sssd.conf', 'ldap.conf', 
+                        'profile.d-sss', 'pam-common-session']:
         with manifest_dir.joinpath("{}".format(config_name)).open() as f:
             t = Template(f.read(), trim_blocks=True)
             filled_t = t.render(

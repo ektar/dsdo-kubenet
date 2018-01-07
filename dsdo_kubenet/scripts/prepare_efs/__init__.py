@@ -6,7 +6,9 @@ from ...lib import cluster_conf
 
 import argparse
 import boto3
+from botocore.exceptions import ClientError
 from ipdb import set_trace
+from jinja2 import Template
 import json
 from kubernetes import client, config
 import kubernetes.client.rest as kube_rest
@@ -145,15 +147,70 @@ def mount_point_in_vpc(mount_points, subnet_id, vpc_id):
     return in_vpc
 
 
+def create_security_group(subnet_id):
+    log = logging.getLogger(log_name)
+
+    ec2c = boto3.client('ec2')
+
+    subnet_dat = ec2c.describe_subnets(SubnetIds=[subnet_id])['Subnets'][0]
+    
+    security_group_id = None
+    group_name = 'dsdo-efs-group'
+    description = 'DSDO EFS Group for subnet {}'.format(subnet_id)
+
+    security_groups = ec2c.describe_security_groups()
+    for sec_grp in security_groups['SecurityGroups']:
+        if sec_grp['GroupName'] == group_name:
+            security_group_id = sec_grp['GroupId']
+            log.info('Found security group {} ({})'.format(
+                sec_grp['GroupName'], security_group_id))    
+            break
+    
+    if security_group_id is None:
+        log.info('Needed security group not found, creating')
+        vpc_id = vpc_from_subnet(subnet_id)
+        resp = ec2c.create_security_group(
+            GroupName=group_name,
+            Description=description,
+            VpcId=vpc_id
+            )
+        security_group_id = resp['GroupId']
+        log.info('Created group {} ({})'.format(group_name, security_group_id))
+
+    # create ingress rules
+    try:
+        ec2c.authorize_security_group_ingress(
+            GroupId=security_group_id,
+            IpPermissions=[{
+                'IpProtocol': '-1',
+                'IpRanges': [
+                    {
+                        'CidrIp': subnet_dat['CidrBlock'],
+                        'Description': 'Traffic from {}'.format(subnet_id)
+                    },
+                ],
+            }])
+    except ClientError as e:
+        if 'already exists' in str(e):
+            pass
+        else:
+            raise(e)
+    
+    return security_group_id
+
+
 def create_mount_point(efs_id, subnet_id):
     log = logging.getLogger(log_name)
 
     efsc = boto3.client('efs')
 
+    sec_group_id = create_security_group(subnet_id)
+
     log.info('Creating mount point (this can take a few minutes...)')
     resp = efsc.create_mount_target(
         FileSystemId=efs_id,
         SubnetId=subnet_id,
+        SecurityGroups=[sec_group_id]
     )
     
     mount_target_id = resp['MountTargetId']
@@ -169,11 +226,55 @@ def create_mount_point(efs_id, subnet_id):
     
     return mount_target_id
 
+
+def create_k8s_resource(resources, org_info, manifest_dir, create_resources=True):
+    log = logging.getLogger(log_name)
+
+    for resource_name in resources:
+        with manifest_dir.joinpath("{}.yaml".format(resource_name)).open() as f:
+            t = Template(f.read())
+            filled_t = t.render(
+                org_info=org_info)
+            resources = yaml.load_all(filled_t)
+          
+            for resource in resources:
+                if create_resources:
+                    log.info('Creating resource {}'.format(resource['kind']))
+    
+                    kube_common.create_resource(resource)
+                else:
+                    log.info('Deleting resource {}'.format(resource['kind']))
+    
+                    kube_common.delete_resource(resource)
+
     
 def prepare_efs(efs_id, region):
     log = logging.getLogger(log_name)
 
-    pass
+    org_info = {}
+    org_info['efs_name'] = "{}.efs.{}.amazonaws.com".format(
+        efs_id, region)
+    
+    manifest_dir = pl.Path(__file__).parent.parent.parent.\
+      joinpath('manifests').joinpath('prepare_efs')
+
+    resources = [
+        'prep_efs_pod'
+    ]
+    
+    create_k8s_resource(resources, org_info, manifest_dir, 
+        create_resources=True)
+
+    log.info('Waiting for file system to create...')
+    status = kube_common.wait_for_pod_complete('dsdo-system', 'efs-prep')
+
+    if not status:
+        msg = 'Final efs preparation not complete, examine logs (e.g. `kubectl -n dsdo-system logs efs-prep`)'
+        log.error(msg)
+        raise Exception(msg)
+
+    create_k8s_resource(resources, org_info, manifest_dir, 
+        create_resources=False)
 
 
 def vpc_from_subnet(subnet_id):
@@ -321,4 +422,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    exit(main())

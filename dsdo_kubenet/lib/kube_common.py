@@ -5,6 +5,7 @@ from kubernetes import client
 import kubernetes.client.rest as kube_rest
 import logging
 from functools import partial
+from time import sleep
 
 from ipdb import set_trace
 
@@ -42,7 +43,8 @@ class DispatchTable():
                 'Service': {'func': k8s.create_namespaced_service, 'namespaced': True},
                 'PersistentVolumeClaim': {'func': k8s.create_namespaced_persistent_volume_claim, 'namespaced': True},
                 'PersistentVolume': {'func': k8s.create_persistent_volume, 'namespaced': False},
-                'Secret': {'func': k8s.create_namespaced_secret, 'namespaced': True}
+                'Pod': {'func': k8s.create_namespaced_pod, 'namespaced': True},
+                'Secret': {'func': k8s.create_namespaced_secret, 'namespaced': True},
             },
             'delete': {
                 'Namespace': {'func': partial(k8s.delete_namespace, body={}), 'namespaced': False},
@@ -51,7 +53,8 @@ class DispatchTable():
                 'Service': {'func': k8s.delete_namespaced_service, 'namespaced': True},
                 'PersistentVolumeClaim': {'func': partial(k8s.delete_namespaced_persistent_volume_claim, body={}), 'namespaced': True},
                 'PersistentVolume': {'func': k8s.delete_persistent_volume, 'namespaced': False},
-                'Secret': {'func': partial(k8s.delete_namespaced_secret, body={}), 'namespaced': True}
+                'Pod': {'func': partial(k8s.delete_namespaced_pod, body={}), 'namespaced': True},
+                'Secret': {'func': partial(k8s.delete_namespaced_secret, body={}), 'namespaced': True},
             }
         }
         return dispatch_table
@@ -119,6 +122,25 @@ def create_resource(resource):
             raise Exception('  Error creating {}: {}'.format(resource['kind'], e))
     except Exception as e:
         raise Exception('  Error creating {}: {}'.format(resource['kind'], e))
+
+
+def wait_for_pod_complete(namespace, name):
+    log = logging.getLogger(log_name)
+
+    k8s = client.CoreV1Api()
+
+    phase = None
+    while phase not in ['Succeeded', 'Failed']:
+        sleep(2)
+        pod = k8s.read_namespaced_pod_status(name, namespace, pretty=True)
+        pod_dict = pod.to_dict()
+        phase = pod_dict['status']['phase']
+        log.info('Received pod status: {}'.format(phase))
+        
+    if phase == 'Failed':
+        log.warning('Pod failed, status: {}'.format(str(pod)))
+
+    return phase == 'Succeeded'
 
 
 def delete_resource(resource):

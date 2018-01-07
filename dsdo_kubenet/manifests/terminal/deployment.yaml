@@ -26,6 +26,9 @@ spec:
           - name: ldap-client-conf
             mountPath: "/etc/auth-client-config/profile.d/sss"
             subPath: sss
+          - name: ldap-client-conf
+            mountPath: "/etc/pam.d/common-session"
+            subPath: common-session
           - name: nfs-home 
             mountPath: /home/users  
           ports:
@@ -44,6 +47,9 @@ spec:
                 mode: 0644
               - key: profile.d-sss
                 path: sss
+                mode: 0644
+              - key: pam-common-session
+                path: common-session
                 mode: 0644
         - name: nfs-home
           nfs:
