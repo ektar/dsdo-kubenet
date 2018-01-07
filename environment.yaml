@@ -6,5 +6,7 @@ dependencies:
   - boto3
   - certbot
   - certbot-external-auth
-  - kubernetes
+  - ipdb
+  - ipython
   - jinja2
+  - kubernetes

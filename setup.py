@@ -89,6 +89,7 @@ setup(
             'launch-ingress=dsdo_kubenet.scripts.launch_ingress:main',
             'launch-ldap=dsdo_kubenet.scripts.launch_ldap:main',
             'launch-terminal=dsdo_kubenet.scripts.launch_terminal:main',
+            'prepare-efs=dsdo_kubenet.scripts.prepare_efs:main',
             'update-launch-dns=dsdo_kubenet.scripts.update_launch_dns:main'
         ],
     },

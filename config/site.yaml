@@ -6,7 +6,11 @@ general:
   admin_email: "eric@ds-do.com"
   lets_encrypt_prefix: "/tmp/le-"
   in_production: "True"
-  efs_name: "fs-6c3ce725.efs.us-east-1.amazonaws.com"
+  vpc_id: "vpc-1bae0c63"
+  region: "us-east-1"
+  efs_subnet_id: "subnet-b0b0459f"
+  efs_id: null
+  # efs_id: "fs-6c3ce725"
 
 # Notes:
 # cluster_name gets appended to general.domain

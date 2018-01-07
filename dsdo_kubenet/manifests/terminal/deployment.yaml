@@ -48,5 +48,5 @@ spec:
         - name: nfs-home
           nfs:
             path: /home
-            server: {{ org_info['efs_name'] }}
+            server: {{org_info['efs_name']}}
             readOnly: false
