@@ -13,9 +13,18 @@ spec:
         app: bastion
         state: blue
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: dsdo-role
+                operator: In
+                values:
+                - admin-node
       containers:
         - name: bastion
-          image: ektar/linux-ldap:v1.1.4
+          image: ektar/linux-ldap:v1.1.5
           volumeMounts:
           - name: ldap-client-conf
             mountPath: "/etc/sssd/sssd.conf"
@@ -26,8 +35,6 @@ spec:
           - name: ldap-client-conf
             mountPath: "/etc/auth-client-config/profile.d/sss"
             subPath: sss
-          # - name: nfs-home 
-          #   mountPath: /home/users  
           ports:
             - containerPort: 22
               name: ssh
@@ -36,7 +43,7 @@ spec:
           secret:
             secretName: ldap-client-conf
             items:
-              - key: sssd.conf
+              - key: bastion-sssd.conf
                 path: sssd.conf
                 mode: 0600
               - key: ldap.conf
@@ -45,8 +52,3 @@ spec:
               - key: profile.d-sss
                 path: sss
                 mode: 0644
-        # - name: nfs-home
-        #   nfs:
-        #     path: /home
-        #     server: {{ org_info['efs_name'] }}
-        #     readOnly: false

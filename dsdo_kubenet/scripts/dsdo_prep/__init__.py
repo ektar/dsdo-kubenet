@@ -23,14 +23,21 @@ log_name = "dsdo.dsdo_prep"
 
 def load_ldap_configs(config, org_info, manifest_dir):
     ldap_configs = {}
-    for config_name in ['sssd.conf', 'ldap.conf', 
-                        'profile.d-sss', 'pam-common-session']:
-        with manifest_dir.joinpath("{}".format(config_name)).open() as f:
+    conf_files = {
+        'bastion-sssd.conf': ('sssd.conf', {'allowed_role': 'bastion_access'}),
+        'shell-sssd.conf': ('sssd.conf', {'allowed_role': 'shell_access'}),
+        'ldap.conf': ('ldap.conf', {}), 
+        'profile.d-sss': ('profile.d-sss', {}), 
+        'pam-common-session': ('pam-common-session', {})
+    }
+    for sec_key, (template_name, extra_vars) in conf_files.items():
+        with manifest_dir.joinpath("{}".format(template_name)).open() as f:
             t = Template(f.read(), trim_blocks=True)
             filled_t = t.render(
-                org_info=org_info)
+                org_info=org_info, 
+                **extra_vars)
             config = base64.b64encode(filled_t.encode('utf-8')).decode('utf-8')
-            ldap_configs[config_name] = config
+            ldap_configs[sec_key] = config
             
     return ldap_configs
 
