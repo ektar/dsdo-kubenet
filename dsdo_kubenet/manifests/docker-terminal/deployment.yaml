@@ -1,0 +1,75 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: docker-terminal
+  labels:
+    app: docker-terminal
+  namespace: dsdo-system
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: docker-terminal
+        state: blue
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: dsdo-role
+                operator: In
+                values:
+                - admin-node
+      containers:
+        - name: docker-terminal
+          image: ektar/linux-docker:v1.0.8
+          env:
+          - name: DOCKER_USERS
+            value: "ecarlson"
+          volumeMounts:
+          - name: ldap-client-conf
+            mountPath: "/etc/sssd/sssd.conf"
+            subPath: sssd.conf
+          - name: ldap-client-conf
+            mountPath: "/etc/ldap.conf"
+            subPath: ldap.conf
+          - name: ldap-client-conf
+            mountPath: "/etc/auth-client-config/profile.d/sss"
+            subPath: sss
+          - name: ldap-client-conf
+            mountPath: "/etc/pam.d/common-session"
+            subPath: common-session
+          - name: nfs-home 
+            mountPath: /home/users  
+          - name: docker-sock
+            mountPath: /var/run/docker.sock
+          ports:
+            - containerPort: 22
+              name: ssh
+      volumes:
+        - name: ldap-client-conf
+          secret:
+            secretName: ldap-client-conf
+            items:
+              - key: shell-sssd.conf
+                path: sssd.conf
+                mode: 0600
+              - key: ldap.conf
+                path: ldap.conf
+                mode: 0644
+              - key: profile.d-sss
+                path: sss
+                mode: 0644
+              - key: pam-common-session
+                path: common-session
+                mode: 0644
+        - name: nfs-home
+          nfs:
+            path: /home
+            server: {{org_info['efs_name']}}
+            readOnly: false
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
