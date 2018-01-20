@@ -1,0 +1,69 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jupyterhub
+  labels:
+    app: jupyterhub
+  namespace: dsdo-system
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jupyterhub
+        state: blue
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: dsdo-role
+                operator: In
+                values:
+                - admin-node
+      containers:
+        - name: jupyterhub
+          image: ektar/jupyterhub-ldap:v1.0.2
+          volumeMounts:
+          - name: ldap-client-conf
+            mountPath: "/etc/sssd/sssd.conf"
+            subPath: sssd.conf
+          - name: ldap-client-conf
+            mountPath: "/etc/ldap.conf"
+            subPath: ldap.conf
+          - name: ldap-client-conf
+            mountPath: "/etc/auth-client-config/profile.d/sss"
+            subPath: sss
+          - name: ldap-client-conf
+            mountPath: "/etc/pam.d/common-session"
+            subPath: common-session
+          - name: nfs-home 
+            mountPath: /home/users  
+          ports:
+            - containerPort: 22
+              name: ssh
+            - containerPort: 8000
+              name: https
+      volumes:
+        - name: ldap-client-conf
+          secret:
+            secretName: ldap-client-conf
+            items:
+              - key: shell-sssd.conf
+                path: sssd.conf
+                mode: 0600
+              - key: ldap.conf
+                path: ldap.conf
+                mode: 0644
+              - key: profile.d-sss
+                path: sss
+                mode: 0644
+              - key: pam-common-session
+                path: common-session
+                mode: 0644
+        - name: nfs-home
+          nfs:
+            path: /home
+            server: {{org_info['efs_name']}}
+            readOnly: false
