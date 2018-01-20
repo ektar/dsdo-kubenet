@@ -11,5 +11,9 @@ spec:
       nodePort: 30389
       protocol: TCP
       name: ldap
+    - port: 636
+      nodePort: 30636
+      protocol: TCP
+      name: ldaps
   selector:
     app: ldap

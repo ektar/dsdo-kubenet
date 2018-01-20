@@ -1,0 +1,5 @@
+dn: cn=group_of_names,ou=groups,dc=ds-do,dc=com
+objectClass: groupofnames
+cn: group_of_names 
+description: All users
+member: uid=ecarlson,ou=internal,ou=users,dc=ds-do,dc=com

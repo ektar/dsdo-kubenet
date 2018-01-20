@@ -16,8 +16,7 @@ up: secret.yaml environment/my-env.startup.yaml
 	kubectl create -f service.yaml
 
 populate: config.ldif
-	CMD="ldapadd -x -D cn=admin,$${LDAP_BASE} -W -f config.ldif -H ldap://$${K8S_INGRESS}:30389"
-	/bin/bash -c 'source ../../config/custom-vars && ldapadd -x -D cn=admin,$${LDAP_BASE} -W -f config.ldif -H ldap://$${K8S_INGRESS}:30389'
+	/bin/bash -c 'source ../../config/custom-vars && ldapadd -x -D cn=admin,$${LDAP_BASE} -W -f config.ldif -H ldaps://$${K8S_INGRESS}:30636'
 
 down:
 	kubectl delete -f secret.yaml

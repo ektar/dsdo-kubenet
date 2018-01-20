@@ -10,6 +10,8 @@ spec:
     metadata:
       labels:
         app: ldap
+      annotations:
+        pod.beta.kubernetes.io/hostname: ldap1.default
     spec:
       initContainers:
         - name: init-ldap
@@ -17,8 +19,7 @@ spec:
           command: ["mkdir", "-p",
                     "/mnt/efs/system/ldap/config",
                     "/mnt/efs/system/ldap/data",
-                    "/mnt/efs/system/ldap/certs",
-                    "/mnt/efs/system/ldap/iwashere"]
+                    "/mnt/efs/system/ldap/certs"]
           volumeMounts:
             - name: efs-root
               mountPath: /mnt/efs
@@ -40,6 +41,8 @@ spec:
           ports:
             - containerPort: 389
               name: ldap
+            - containerPort: 636
+              name: ldaps
       volumes:
         - name: ldap-data
           nfs:
