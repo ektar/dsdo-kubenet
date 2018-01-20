@@ -35,6 +35,8 @@ spec:
           - name: ldap-client-conf
             mountPath: "/etc/auth-client-config/profile.d/sss"
             subPath: sss
+          - name: nfs-home 
+            mountPath: /home/users  
           ports:
             - containerPort: 22
               name: ssh
@@ -52,3 +54,8 @@ spec:
               - key: profile.d-sss
                 path: sss
                 mode: 0644
+        - name: nfs-home
+          nfs:
+            path: /home
+            server: {{org_info['efs_name']}}
+            readOnly: false
