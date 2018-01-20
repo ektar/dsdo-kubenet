@@ -19,7 +19,7 @@ class DSDOParser(argparse.ArgumentParser):
             action="store_true")
 
         self.add_argument("-c", "--config-file", 
-            type=str, help="Path to configuration file",
+            type=str, help="Path to configuration file (env var DSDO_CONFIG_FILE)",
             default=os.environ.get('DSDO_CONFIG_FILE', None))
             
     def parse_args(self, **kwargs):
