@@ -61,6 +61,8 @@ spec:
   machineType: t2.micro
   maxSize: 1
   minSize: 1
+  rootVolumeSize: 20
+  rootVolumeType: gp2
   nodeLabels:
     kops.k8s.io/instancegroup: master-{{ region }}
   role: Master
@@ -81,6 +83,8 @@ spec:
   machineType: t2.small
   maxSize: 2
   minSize: 2
+  rootVolumeSize: 20
+  rootVolumeType: gp2
   nodeLabels:
     kops.k8s.io/instancegroup: nodes
     dsdo-role: admin-node
