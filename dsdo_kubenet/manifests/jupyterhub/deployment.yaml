@@ -4,7 +4,7 @@ metadata:
   name: jupyterhub
   labels:
     app: jupyterhub
-  namespace: dsdo-system
+  namespace: dsdo-apps
 spec:
   replicas: 1
   template:
@@ -21,7 +21,7 @@ spec:
               - key: dsdo-role
                 operator: In
                 values:
-                - admin-node
+                - jupyterhub
       containers:
         - name: jupyterhub
           image: ektar/jupyterhub-ldap:v1.0.2
